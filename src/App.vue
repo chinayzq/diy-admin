@@ -1,7 +1,7 @@
 <template>
-  <screen-adapter>
-    <router-view />
-  </screen-adapter>
+  <!-- <screen-adapter> -->
+  <router-view />
+  <!-- </screen-adapter> -->
 </template>
 
 <script setup>

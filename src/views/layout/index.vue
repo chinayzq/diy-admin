@@ -33,6 +33,7 @@ import TopBar from "./components/topBar.vue";
     flex-direction: column;
     .main-container {
       flex: 1;
+      padding: 20px;
     }
   }
 }

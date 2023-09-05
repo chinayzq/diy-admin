@@ -5,22 +5,40 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/dashboard',
+      redirect: '/model',
       component: Layout,
       children: [
         {
-          path: '/dashboard',
-          name: 'dashboard',
-          component: () => import('@/views/dashboard/index.vue'),
-          meta: { title: 'dashboard' },
+          path: '/model',
+          name: 'model',
+          component: () => import('@/views/model/index.vue'),
+          meta: { title: 'Model' },
         },
         {
-          path: '/setting',
-          name: 'setting',
-          component: () => import('@/views/setting/index.vue'),
-          meta: { title: 'setting' },
+          path: '/material',
+          name: 'material',
+          component: () => import('@/views/material/index.vue'),
+          meta: { title: 'Material' },
+        },
+        {
+          path: '/template',
+          name: 'template',
+          component: () => import('@/views/template/index.vue'),
+          meta: { title: 'Template' },
+        },
+        {
+          path: '/dictionary',
+          name: 'dictionary',
+          component: () => import('@/views/dictionary/index.vue'),
+          meta: { title: 'Dictionary' },
         },
       ],
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('@/views/login/index.vue'),
+      meta: { title: 'Login' },
     },
   ],
 });

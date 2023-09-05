@@ -16,6 +16,7 @@ import zhCN from 'element-plus/dist/locale/zh-cn.mjs'; //引入中文
 import 'element-plus/dist/index.css';
 app.use(ElementPlus, { locale: zhCN });
 import './assets/css/base.less';
+import './assets/css/index.less';
 
 // vuex
 import vuex from '@/vuex';
