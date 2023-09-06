@@ -1,3 +1,26 @@
 #app {
   height: 100vh;
 }
+.el-dialog__header {
+  .el-dialog__title {
+    font-weight: bold;
+    font-size: 18px;
+    position: relative;
+    padding-left: 6px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    &::before {
+      content: '';
+      height: 20px;
+      width: 3px;
+      position: absolute;
+      left: -2px;
+      top: 3px;
+      border-radius: 2px;
+      background-color: #409eff;
+    }
+  }
+}
+.el-form-item__label {
+  font-size: 14px;
+  font-weight: bold;
+}
