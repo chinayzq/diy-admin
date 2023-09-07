@@ -17,35 +17,17 @@ const getBaseByMode = (mode) => {
   );
   return baseUrl[mode];
 };
-// https://cn.vitejs.dev/config/
 export default ({ mode }) =>
   defineConfig({
     plugins: [
       vue(),
       DefineOptions(),
-      // copy({
-      //   targets: [
-      //     {
-      //       src: 'node_modules/@liveqing/liveplayer-v3/dist/component/liveplayer-lib.min.js',
-      //       dest: 'public/js',
-      //     },
-      //   ],
-      // }),
       topLevelAwait({
         // The export name of top-level await promise for each chunk module
         promiseExportName: '__tla',
         // The function to generate import names of top-level await promise in each chunk module
         promiseImportName: (i) => `__tla_${i}`,
       }),
-      // vitePluginImport([
-      //   {
-      //     libraryName: 'element-plus',
-      //     libraryDirectory: 'es',
-      //     style(name) {
-      //       return `element-plus/lib/theme-chalk/${name}.css`;
-      //     },
-      //   },
-      // ]),
     ],
     base: getBaseByMode(mode),
     resolve: {
@@ -67,15 +49,15 @@ export default ({ mode }) =>
       },
     },
     build: {
-      outDir: 'industryCenter',
+      outDir: 'diyAdmin',
     },
     server: {
       hmr: true,
       proxy: {
-        '/saascloud': {
-          target: ' https://sit.rlinkiot.com/',
+        '/diyadmin': {
+          target: 'http://1.116.139.202:8083/',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/saascloud/, 'saascloud'),
+          // rewrite: (path) => path.replace(/^\/saascloud/, 'saascloud'),
         },
       },
     },

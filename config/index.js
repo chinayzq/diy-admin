@@ -1,22 +1,14 @@
 export default {
   development: {
-    baseUrl: '/saascloud/saas',
-    pulicPath: '',
-    loginPath: 'http://localhost:8080/#/login',
+    baseUrl: '/diyadmin',
   },
   sit: {
-    baseUrl: '/saascloud/saas',
-    pulicPath: '/industryCenter',
-    loginPath: 'https://sit.rlinkiot.com/console/#/login',
+    baseUrl: '/diyadmin',
   },
   uat: {
-    baseUrl: '/saascloud/saas',
-    pulicPath: '/industryCenter',
-    loginPath: 'https://uat.rlinkiot.com/console/#/login',
+    baseUrl: '/diyadmin',
   },
   prod: {
-    baseUrl: '/saascloud/saas',
-    pulicPath: '/industryCenter',
-    loginPath: 'https://prod.rlinkiot.com/console/#/login',
+    baseUrl: '/diyadmin',
   },
 };

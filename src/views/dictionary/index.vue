@@ -2,14 +2,19 @@
   <div class="dictionary-page">
     <div class="button-line">
       <el-button type="primary" @click="addHandler">添加分类</el-button>
-      <el-button>刷新</el-button>
+      <el-button @click="initTableList">刷新</el-button>
     </div>
     <div class="table-container">
-      <el-table :data="tableData" stripe style="width: 100%">
+      <el-table
+        :data="tableData"
+        v-loading="pageLoading"
+        stripe
+        style="width: 100%"
+      >
         <el-table-column type="index" width="50" />
-        <el-table-column prop="itemCode" label="类别编码" />
-        <el-table-column prop="itemName" label="类别名称" />
-        <el-table-column prop="itemDescription" label="描述" />
+        <el-table-column prop="classCode" label="类别编码" />
+        <el-table-column prop="className" label="类别名称" />
+        <el-table-column prop="description" label="描述" />
         <el-table-column prop="operation" label="操作" width="190">
           <template #default="scope">
             <el-button type="primary" text @click="editHandler(scope.row)">
@@ -21,13 +26,13 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="pagination-container">
+      <!-- <div class="pagination-container">
         <el-pagination
           background
           layout="prev, pager, next"
           :total="tableData.length"
         />
-      </div>
+      </div> -->
     </div>
     <DictionaryModel
       :dialogVisible="dialogVisible"
@@ -38,30 +43,32 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onBeforeMount } from "vue";
 import { ElMessageBox } from "element-plus";
 import DictionaryModel from "./components/dictionaryModel.vue";
-const tableData = ref([
-  {
-    itemCode: "BRAND",
-    itemName: "品牌",
-    itemDescription: "品牌描述",
-  },
-  {
-    itemCode: "MODEL",
-    itemName: "机型",
-    itemDescription: "机型描述",
-  },
-  {
-    itemCode: "COLOR",
-    itemName: "颜色",
-    itemDescription: "颜色描述",
-  },
-]);
+import { getDictionaryList } from "@/api/dictionary";
+const tableData = ref([]);
+const pageLoading = ref(false);
 const dialogVisible = ref(false);
 const dialogData = ref({
   title: "新增分类",
 });
+onBeforeMount(() => {
+  initTableList();
+});
+const initTableList = () => {
+  pageLoading.value = true;
+  getDictionaryList()
+    .then((res) => {
+      console.log("xxx", res);
+      if (res.code === 200) {
+        tableData.value = res.data;
+      }
+    })
+    .finally(() => {
+      pageLoading.value = false;
+    });
+};
 const addHandler = () => {
   dialogData.value.title = "新增分类";
   dialogVisible.value = true;

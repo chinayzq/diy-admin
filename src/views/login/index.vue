@@ -1,9 +1,14 @@
 <template>
   <div class="login-component">
-    <div class="login-logo">LOGO</div>
+    <div class="login-logo">
+      <img src="@/assets/images/project_logo.png" alt="" />
+    </div>
     <div class="login-form-container">
       <div class="inner-container">
-        <div class="main-title">欢迎登录</div>
+        <div class="main-title">
+          欢迎登录
+          <img src="@/assets/images/project_logo.png" alt="" />
+        </div>
         <div class="tips-container">
           <span class="tips-span">{{ loginTip }}</span>
         </div>
@@ -102,7 +107,8 @@ const handleLogin = () => {
   height: 100%;
   width: 100%;
   background: url("../../assets/images/login_background.png");
-  background-size: 100% 100%;
+  // background: url("../../assets/images/login_background2.jpg");
+  background-size: cover;
   position: relative;
   display: flex;
   justify-content: center;
@@ -110,19 +116,17 @@ const handleLogin = () => {
   .login-logo {
     position: absolute;
     top: 40px;
-    left: 40px;
+    left: 120px;
     width: 190px;
     height: 90px;
-    background: #ccc;
     border-radius: 5px;
     color: #252d3d;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f7e0e0;
-    color: #4f4f4f;
     font-size: 20px;
     font-family: fantasy;
+    filter: invert(1);
   }
   .login-form-container {
     width: 478px;
@@ -141,11 +145,17 @@ const handleLogin = () => {
       border-radius: 20px;
       padding: 74px 40px 0;
       .main-title {
-        font-size: 26px;
+        font-size: 20px;
         font-family: PingFang SC-Semibold, PingFang SC;
         font-weight: 600;
         color: #252d3d;
         text-align: center;
+        display: flex;
+        align-items: center;
+        img {
+          height: 30px;
+          margin-left: 10px;
+        }
       }
       .tips-container {
         height: 50px;

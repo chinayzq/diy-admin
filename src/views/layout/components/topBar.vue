@@ -46,9 +46,9 @@ const clearLocalStore = () => {};
 
 <style lang="less" scoped>
 .top-bar-component {
+  background: #fff;
   height: 60px;
   color: #000;
-  box-shadow: 13px -8px 10px 10px #ccc;
   padding: 0 20px;
   display: flex;
   justify-content: space-between;
@@ -58,6 +58,7 @@ const clearLocalStore = () => {};
     font-weight: bold;
     color: #152c5b;
     font-family: Source Han Sans SC-Bold, Source Han Sans SC;
+    filter: drop-shadow(2px 2px 2px gray);
   }
   .right-part {
     img {

@@ -1,6 +1,8 @@
 <template>
   <div class="sider-bar-component">
-    <div class="logo-container">LOGO</div>
+    <div class="logo-container">
+      <img src="@/assets/images/project_logo.png" alt="" />
+    </div>
     <el-menu :default-active="defaultActive" class="el-menu-container" router>
       <el-menu-item
         v-for="item in menuList"
@@ -51,27 +53,34 @@ const menuList = ref([
   width: 190px;
   height: 100%;
   color: #000;
+  background: #fff;
   .logo-container {
     height: 90px;
     width: 100%;
-    background: #f7e0e0;
-    color: #4f4f4f;
-    font-size: 20px;
-    font-family: fantasy;
     display: flex;
     align-items: center;
     justify-content: center;
+    filter: drop-shadow(0px 11px 4px #555);
+    img {
+      width: 155px;
+    }
   }
   .el-menu-container {
     height: calc(100% - 90px);
   }
   :deep(.el-menu-item) {
     font-weight: bold;
+    &:hover {
+      background: rgb(241, 239, 239);
+    }
   }
   :deep(.el-menu-item.is-active) {
-    border-right: 2px solid #409eff;
-    background: #f4f7ff;
-    color: #2a61ff;
+    background: #fff;
+    color: #000;
+    filter: drop-shadow(2px 4px 6px gray);
+    span {
+      filter: drop-shadow(2px 4px 6px gray);
+    }
   }
 }
 </style>
