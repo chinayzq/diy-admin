@@ -27,17 +27,10 @@
           </template>
         </el-table-column>
       </el-table>
-      <!-- <div class="pagination-container">
-        <el-pagination
-          background
-          layout="prev, pager, next"
-          :total="tableData.length"
-        />
-      </div> -->
     </div>
     <DictionaryModel
       :dialogVisible="dialogVisible"
-      @close="dialogVisible = false"
+      @close="modelCloaseHandler"
       :dataset="dialogData"
     />
   </div>
@@ -45,14 +38,15 @@
 
 <script setup>
 import { ref, onBeforeMount } from "vue";
-import { ElMessageBox } from "element-plus";
+import { ElMessageBox, ElMessage } from "element-plus";
 import DictionaryModel from "./components/dictionaryModel.vue";
-import { getDictionaryList } from "@/api/dictionary";
+import { getDictionaryList, deleteClassById } from "@/api/dictionary";
 const tableData = ref([]);
 const pageLoading = ref(false);
 const dialogVisible = ref(false);
 const dialogData = ref({
   title: "新增分类",
+  datas: {},
 });
 onBeforeMount(() => {
   initTableList();
@@ -71,25 +65,39 @@ const initTableList = () => {
 };
 const addHandler = () => {
   dialogData.value.title = "新增分类";
+  dialogData.value.datas = {};
   dialogVisible.value = true;
 };
 const editHandler = (row) => {
-  console.log(row);
   dialogData.value.title = "编辑分类";
+  dialogData.value.datas = row;
   dialogVisible.value = true;
 };
-const deleteHandler = (row) => {
-  ElMessageBox.confirm("确定删除该条数据吗?", "Warning", {
+const deleteHandler = ({ classId }) => {
+  ElMessageBox.confirm("确定删除该条数据吗?", "警告", {
     confirmButtonText: "确认",
     cancelButtonText: "取消",
     type: "warning",
   })
     .then(() => {
-      // do delete...
+      deleteClassById({ classId }).then((res) => {
+        if (res.code === 200) {
+          ElMessage({
+            message: "删除成功！",
+            type: "success",
+          });
+          initTableList();
+        }
+      });
     })
     .catch(() => {
       console.log("取消删除！");
     });
+};
+const modelCloaseHandler = (freshFlag) => {
+  if (freshFlag === true) initTableList();
+  dialogVisible.value = false;
+  dialogData.value.datas = {};
 };
 </script>
 

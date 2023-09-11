@@ -37,6 +37,7 @@ import TopBar from "./components/topBar.vue";
       padding: 20px;
       background: #ffffff;
       border-radius: 10px;
+      overflow: auto;
     }
   }
 }

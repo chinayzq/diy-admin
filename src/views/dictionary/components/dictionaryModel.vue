@@ -9,26 +9,30 @@
       <el-form
         label-position="top"
         label-width="120px"
+        ref="dictionaryFormIns"
         :rules="formRules"
         :model="formData"
       >
         <el-row :gutter="48">
           <el-col :span="12">
-            <el-form-item label="类别编码" prop="itemCode">
-              <el-input v-model="formData.itemCode" />
+            <el-form-item label="类别编码" prop="classCode">
+              <el-input
+                :disabled="props.dataset.datas.classId"
+                v-model="formData.classCode"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="类别名称" prop="itemName">
-              <el-input v-model="formData.itemName" />
+            <el-form-item label="类别名称" prop="className">
+              <el-input v-model="formData.className" />
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="描述" prop="itemDescription">
+            <el-form-item label="描述" prop="description">
               <el-input
                 :rows="2"
                 type="textarea"
-                v-model="formData.itemDescription"
+                v-model="formData.description"
               />
             </el-form-item>
           </el-col>
@@ -41,7 +45,11 @@
               @click="addNewItem"
               >新增一项</el-button
             >
-            <el-table :data="formData.itemList" style="width: 100%">
+            <el-table
+              v-loading="listLoading"
+              :data="formData.itemList"
+              style="width: 100%"
+            >
               <el-table-column prop="itemCode" label="项编码">
                 <template #default="scope">
                   <el-input v-model="scope.row.itemCode"></el-input>
@@ -79,8 +87,14 @@
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="emit('close')">取消</el-button>
-          <el-button type="primary" @click="submitHandler"> 保存 </el-button>
+          <el-button @click="handleClose">取消</el-button>
+          <el-button
+            type="primary"
+            @click="submitHandler"
+            v-loading="submitLoading"
+          >
+            保存
+          </el-button>
         </span>
       </template>
     </el-dialog>
@@ -88,8 +102,18 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { Delete, Check, Close, Edit } from "@element-plus/icons-vue";
+import { ElMessage } from "element-plus";
+import {
+  addDictionary,
+  getItemByClassId,
+  editDictionary,
+  updateDictionaryClass,
+} from "@/api/dictionary";
+const dictionaryFormIns = ref(null);
+const listLoading = ref(false);
+const submitLoading = ref(false);
 const emit = defineEmits();
 const props = defineProps({
   dialogVisible: {
@@ -105,18 +129,128 @@ const props = defineProps({
     },
   },
 });
+watch(
+  props.dataset,
+  (datas) => {
+    console.log("datas", datas);
+    if (datas?.datas?.classId) {
+      displayDatas(datas.datas);
+    }
+  },
+  {
+    deep: true,
+  }
+);
 const formData = ref({
-  itemCode: "",
-  itemName: "",
-  itemDescription: "",
+  classCode: "",
+  className: "",
+  description: "",
   itemList: [],
 });
 const formRules = ref({
-  itemCode: [{ required: true, message: "请输入类别编码", trigger: "blur" }],
-  itemName: [{ required: true, message: "请输入类别名称", trigger: "blur" }],
+  classCode: [{ required: true, message: "请输入类别编码", trigger: "blur" }],
+  className: [{ required: true, message: "请输入类别名称", trigger: "blur" }],
 });
+const displayDatas = (datas) => {
+  const { classCode, className, classId, description } = datas;
+  formData.value.classCode = classCode;
+  formData.value.className = className;
+  formData.value.description = description;
+  listLoading.value = true;
+  getItemByClassId({ classId })
+    .then((res) => {
+      if (res?.data) {
+        formData.value.itemList = res.data;
+      }
+    })
+    .finally(() => {
+      listLoading.value = false;
+    });
+};
 const submitHandler = () => {
-  console.log(1);
+  dictionaryFormIns.value.validate((valid) => {
+    if (valid) {
+      if (props?.dataset?.datas?.classId) {
+        // 如果有classId则是编辑
+        console.log("编辑");
+        editHandler();
+      } else {
+        // 没有classId则是新增
+        console.log("新增");
+        addNewHandler();
+      }
+    }
+  });
+};
+const editHandler = async () => {
+  submitLoading.value = true;
+  const classId = props.dataset.datas.classId;
+  const { classCode, className, description } = formData.value;
+  const params = {
+    classId,
+    classCode,
+    className,
+    description,
+    extend1: "",
+    extend2: "",
+    extend3: "",
+  };
+  const classResult = await updateDictionaryClass(params);
+  if (classResult.code === 200) {
+    updateItemListRequest(classId);
+  }
+};
+const addNewHandler = async () => {
+  submitLoading.value = true;
+  const { classCode, className, description, itemList } = formData.value;
+  const params = {
+    classCode,
+    className,
+    description,
+    itemList,
+    extend1: "",
+    extend2: "",
+    extend3: "",
+  };
+  const result = await addDictionary(params);
+  if (result.code === 4100) {
+    ElMessage({
+      message: result.message,
+      type: "warning",
+    });
+    submitLoading.value = false;
+    return;
+  }
+  if (itemList.length) {
+    updateItemListRequest(result.data);
+  } else {
+    ElMessage({
+      message: "新增分类成功！",
+      type: "success",
+    });
+    submitLoading.value = false;
+    handleClose(true);
+  }
+};
+const updateItemListRequest = (classId) => {
+  const itemParams = {
+    classId,
+    itemList: formData.value.itemList,
+  };
+  editDictionary(itemParams)
+    .then((res) => {
+      console.log("xxx");
+      if (res.code === 200) {
+        ElMessage({
+          message: "更新分类成功！",
+          type: "success",
+        });
+        handleClose(true);
+      }
+    })
+    .finally(() => {
+      submitLoading.value = false;
+    });
 };
 const addNewItem = () => {
   formData.value.itemList.push({
@@ -132,6 +266,18 @@ const rowClickHandler = (type, row, index) => {
       formData.value.itemList.splice(index, 1);
       break;
   }
+};
+const resetForm = () => {
+  formData.value = {
+    classCode: "",
+    className: "",
+    description: "",
+    itemList: [],
+  };
+};
+const handleClose = (flag) => {
+  resetForm();
+  emit("close", flag);
 };
 </script>
 

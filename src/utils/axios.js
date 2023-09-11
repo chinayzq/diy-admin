@@ -16,7 +16,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.interceptors.response.use(
   (res) => {
     if (!res) return;
-    if (res.data.code === 401) {
+    if (res?.data?.code === 401) {
       ElMessage({
         message: '登录失效，请重新登录！',
         type: 'warning',
