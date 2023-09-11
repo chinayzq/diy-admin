@@ -8,6 +8,7 @@
       <el-table
         :data="tableData"
         v-loading="pageLoading"
+        border
         stripe
         style="width: 100%"
       >
@@ -60,7 +61,6 @@ const initTableList = () => {
   pageLoading.value = true;
   getDictionaryList()
     .then((res) => {
-      console.log("xxx", res);
       if (res.code === 200) {
         tableData.value = res.data;
       }

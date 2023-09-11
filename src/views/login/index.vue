@@ -20,13 +20,13 @@
           auto-complete="on"
           label-position="left"
         >
-          <el-form-item prop="username">
+          <el-form-item prop="userName">
             <el-input
               class="login-input"
-              v-model="loginForm.username"
+              v-model="loginForm.userName"
               :prefix-icon="User"
               maxlength="16"
-              name="username"
+              name="userName"
               type="text"
               auto-complete="on"
               placeholder="账号"
@@ -66,16 +66,19 @@
 <script setup>
 import { ref } from "vue";
 import { User, Lock } from "@element-plus/icons-vue";
+import { loginRequest } from "@/api/user.js";
+import { ElMessage } from "element-plus";
+import { useRouter } from "vue-router";
+const router = useRouter();
 const loginTip = ref(null);
 const loading = ref(false);
 const loginForm = ref({
-  username: "",
+  userName: "",
   password: "",
-  authType: "",
 });
 const loginFormIns = ref(null);
 const loginRules = ref({
-  username: [
+  userName: [
     {
       required: true,
       trigger: "blur",
@@ -94,6 +97,26 @@ const handleLogin = () => {
   loginFormIns.value.validate((valid) => {
     if (valid) {
       loading.value = true;
+      loginRequest({
+        userName: loginForm.value.userName,
+        password: loginForm.value.password,
+      })
+        .then((res) => {
+          if (res.code === 4101) {
+            ElMessage({
+              message: "账号或密码错误，请重新登录！",
+              type: "warning",
+            });
+          } else {
+            if (res.data && res.data.token) {
+              localStorage.setItem("diy-admin-token", res.data.token);
+              router.push("/");
+            }
+          }
+        })
+        .finally(() => {
+          loading.value = false;
+        });
     } else {
       console.log("error submit!!");
       return false;

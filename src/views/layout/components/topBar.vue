@@ -17,6 +17,8 @@
 import { watch, ref } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { loginOutRequest } from "@/api/user.js";
+import axios from "axios";
 const currentMenu = ref(null);
 const router = useRouter();
 watch(
@@ -41,7 +43,11 @@ const logoutHandler = () => {
       console.log("取消退出登录！");
     });
 };
-const clearLocalStore = () => {};
+const clearLocalStore = () => {
+  loginOutRequest().then(() => {
+    axios.defaults.headers["token"] = "";
+  });
+};
 </script>
 
 <style lang="less" scoped>
