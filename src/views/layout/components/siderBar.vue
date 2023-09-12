@@ -9,7 +9,7 @@
         :key="item.router"
         :index="item.router"
       >
-        <el-icon><icon-menu /></el-icon>
+        <el-icon><component :is="item.icon" /></el-icon>
         <span>{{ item.label }}</span>
       </el-menu-item>
     </el-menu>
@@ -32,18 +32,22 @@ const menuList = ref([
   {
     label: "Model",
     router: "/model",
+    icon: "Menu",
   },
   {
-    label: "Material",
-    router: "/material",
+    label: "Sticker",
+    router: "/sticker",
+    icon: "Discount",
   },
   {
     label: "Template",
     router: "/template",
+    icon: "Grid",
   },
   {
     label: "Dictionary",
     router: "/dictionary",
+    icon: "Document",
   },
 ]);
 </script>
@@ -79,7 +83,7 @@ const menuList = ref([
     color: #000;
     filter: drop-shadow(2px 4px 6px gray);
     span {
-      filter: drop-shadow(2px 4px 6px gray);
+      // filter: drop-shadow(2px 4px 6px gray);
     }
   }
 }

@@ -4,9 +4,11 @@ import router from './router/index';
 // # 引入 vue3-lazy, 图片懒加载
 import vueLazyLoad from 'vue3-lazy';
 import { initGlableFilters } from './utils';
-
+import * as ElIconModules from '@element-plus/icons-vue';
 const app = createApp(App);
-
+for (const name in ElIconModules) {
+  app.component(name, ElIconModules[name]);
+}
 // 全局过滤器
 initGlableFilters(app);
 

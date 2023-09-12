@@ -2,7 +2,7 @@
   <div class="model-page-component">
     <div class="search-line">
       <div class="single-item">
-        <span>机型：</span>
+        <span class="item-label">机型：</span>
         <span>
           <el-select
             @change="dataFilterHandler"
@@ -61,7 +61,7 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { getModelList } from "@/api/model";
+import { getModelList } from "@/api/model.js";
 import ModelDialog from "./components/modelDialog.vue";
 const tableData = ref([]);
 const pageLoading = ref(false);
@@ -70,6 +70,8 @@ const resourceList = ref([]);
 const modelDialogDatas = ref({
   show: false,
   title: "机型颜色",
+  phoneCode: "",
+  type: "",
 });
 const search = ref({
   model: "",
@@ -103,15 +105,25 @@ const dataFilterHandler = () => {
     }
   });
 };
-const editHandler = (row, type) => {
+const editHandler = ({ phoneCode }, type) => {
   const titleMap = {
     phoneModel: "机型颜色",
     phoneCase: "手机壳颜色",
   };
+  //   phoneModel: "机型颜色" - 1,
+  //   phoneCase: "手机壳颜色" - 2,
+  const typeMap = {
+    phoneModel: 1,
+    phoneCase: 2,
+  };
   modelDialogDatas.value.title = titleMap[type];
+  modelDialogDatas.value.type = typeMap[type];
+  modelDialogDatas.value.phoneCode = phoneCode;
   modelDialogDatas.value.show = true;
 };
 const dialogCloseHandler = () => {
+  modelDialogDatas.value.type = "";
+  modelDialogDatas.value.phoneCode = "";
   modelDialogDatas.value.show = false;
 };
 </script>
@@ -122,6 +134,10 @@ const dialogCloseHandler = () => {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
+    .item-label {
+      font-size: 14px;
+      color: #333;
+    }
     .single-item + .single-item {
       margin-left: 20px;
     }

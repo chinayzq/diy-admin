@@ -1,22 +1,23 @@
 <template>
   <div class="model-dialog-component">
     <el-dialog
-      v-model="dataset.show"
-      :title="dataset.title"
+      v-model="props.dataset.show"
+      :title="props.dataset.title"
       width="800"
       :before-close="handleClose"
     >
       <el-upload
-        :on-success="uploadSuccess"
-        :file-list="fileList"
-        :action="'/diyadmin/upload'"
+        v-model:file-list="fileList"
+        action="/diyadmin/upload"
         list-type="picture-card"
         :on-preview="handlePictureCardPreview"
-        :on-remove="handleRemove"
       >
         <el-icon><Plus /></el-icon>
       </el-upload>
-      <el-button type="primary" @click="saveHandler">保存</el-button>
+      <div class="button-container">
+        <el-button @click="handleClose">取消</el-button>
+        <el-button type="primary" @click="saveHandler">保存</el-button>
+      </div>
     </el-dialog>
     <el-dialog v-model="previewDialog.show">
       <img w-full :src="previewDialog.url" alt="Preview Image" />
@@ -25,9 +26,13 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { Plus } from "@element-plus/icons-vue";
+import { ref, watch } from "vue";
+import { createPhoneColor, getPhoneColor } from "@/api/model";
+import { ElMessage } from "element-plus";
+
 const emit = defineEmits();
-defineProps({
+const props = defineProps({
   dataset: {
     type: Object,
     default() {
@@ -40,31 +45,59 @@ const previewDialog = ref({
   url: "",
 });
 const fileList = ref([]);
-const handleClose = (flag) => {
-  emit("close", flag);
-};
-const handleRemove = (uploadFile) => {
-  // fileList.value = fileList.value.filter((item) => {
-  //   item.url !== uploadFile.response.data;
-  // });
-};
-const uploadSuccess = (response, uploadFile, uploadFiles) => {
-  console.log("uploadFiles", uploadFiles);
-  fileList.value.push({
-    name: uploadFile.name,
-    url: response.data,
+
+watch(
+  props.dataset,
+  (datas) => {
+    initAndDisplayDatas(datas);
+  },
+  { deep: true }
+);
+const initAndDisplayDatas = (datas) => {
+  if (!datas.type) return;
+  const { type, phoneCode } = datas;
+  getPhoneColor({ type, phoneCode }).then((res) => {
+    if (res.code === 200) {
+      fileList.value = res.data.colorUrlList;
+    }
   });
+};
+const handleClose = (flag) => {
+  fileList.value = [];
+  emit("close", flag);
 };
 const handlePictureCardPreview = (uploadFile) => {
   previewDialog.value.url = uploadFile;
   previewDialog.value.show = true;
 };
 const saveHandler = () => {
-  console.log("fileList", fileList.value);
+  const params = {
+    type: props.dataset.type,
+    phoneCode: props.dataset.phoneCode,
+    colorUrlList: fileList.value.map((item) => {
+      return {
+        colorName: item.colorName || item.name,
+        url: item.response ? item.response.data : item.url,
+      };
+    }),
+  };
+  createPhoneColor(params).then((res) => {
+    if (res.code === 200) {
+      ElMessage({
+        message: "图片保存成功！",
+        type: "success",
+      });
+      handleClose(true);
+    }
+  });
 };
 </script>
 
-<style>
+<style lang="less" scoped>
 .model-dialog-component {
+  .button-container {
+    margin-top: 10px;
+    text-align: right;
+  }
 }
 </style>

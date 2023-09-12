@@ -15,10 +15,10 @@ const router = createRouter({
           meta: { title: 'Model' },
         },
         {
-          path: '/material',
-          name: 'material',
-          component: () => import('@/views/material/index.vue'),
-          meta: { title: 'Material' },
+          path: '/sticker',
+          name: 'sticker',
+          component: () => import('@/views/sticker/index.vue'),
+          meta: { title: 'sticker' },
         },
         {
           path: '/template',
