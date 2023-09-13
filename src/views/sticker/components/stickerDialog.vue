@@ -27,7 +27,7 @@
               <div class="form-image-line" v-loading="uploadLoading">
                 <el-upload
                   class="avatar-uploader"
-                  action="/diyadmin/upload"
+                  :action="beseUploadUrl"
                   :with-credentials="true"
                   :show-file-list="false"
                   :before-upload="beforeUploadHandler"
@@ -36,7 +36,7 @@
                   <img
                     v-if="formData.stickerUrl"
                     @click.stop="handlePictureCardPreview(formData.stickerUrl)"
-                    :src="formData.stickerUrl"
+                    v-lazy="formData.stickerUrl"
                     class="avatar"
                   />
                   <el-icon v-else class="el-icon-plus avatar-uploader-icon"
@@ -65,9 +65,9 @@
             <el-form-item label="素材列表" prop="stickerChildlist">
               <el-upload
                 v-model:file-list="formData.stickerChildlist"
-                action="/diyadmin/upload"
+                :action="beseUploadUrl"
                 list-type="picture-card"
-                :on-preview="handlePictureCardPreview"
+                :on-preview="(value) => handlePictureCardPreview(value, 'list')"
               >
                 <el-icon><Plus /></el-icon>
               </el-upload>
@@ -86,7 +86,9 @@
       </div>
     </el-dialog>
     <el-dialog v-model="previewDialog.show" title="图片预览">
-      <img w-full width="100%" :src="previewDialog.url" alt="Preview Image" />
+      <div class="preview-dialog-container">
+        <img w-full v-lazy="previewDialog.url" alt="Preview Image" />
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -95,6 +97,9 @@
 import { createPhoneSticker } from "@/api/sticker";
 import { ref, watch } from "vue";
 import { ElMessage } from "element-plus";
+import { buildImageUrl } from "@/utils/index.js";
+import config from "~/config";
+const beseUploadUrl = config[import.meta.env.MODE].uploadUrl;
 const emit = defineEmits();
 const stickerFormIns = ref(null);
 const submitLoading = ref(false);
@@ -168,12 +173,16 @@ const beforeUploadHandler = () => {
   uploadLoading.value = true;
 };
 const handleAvatarSuccess = (response, uploadFile) => {
-  formData.value.stickerUrl = response.data;
+  formData.value.stickerUrl = buildImageUrl(response.data);
   stickerFormIns.value.validateField("stickerUrl", () => null);
   uploadLoading.value = false;
 };
-const handlePictureCardPreview = (uploadFile) => {
-  previewDialog.value.url = uploadFile;
+const handlePictureCardPreview = (uploadFile, type) => {
+  if (type === "list") {
+    previewDialog.value.url = uploadFile.url;
+  } else {
+    previewDialog.value.url = uploadFile;
+  }
   previewDialog.value.show = true;
 };
 const submitHandler = () => {
@@ -189,7 +198,7 @@ const submitHandler = () => {
         stickerChildlist: formData.value.stickerChildlist.map((item) => {
           return {
             stickerChildName: item.stickerChildName || item.name,
-            url: item.response ? item.response.data : item.url,
+            url: buildImageUrl(item.response ? item.response.data : item.url),
           };
         }),
       };
@@ -250,6 +259,15 @@ const submitHandler = () => {
   }
   .button-container {
     text-align: right;
+  }
+  .preview-dialog-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    img {
+      height: 400px;
+      width: 400px;
+    }
   }
 }
 </style>

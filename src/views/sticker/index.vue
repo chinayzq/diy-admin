@@ -15,7 +15,15 @@
       >
         <el-table-column type="index" width="50" />
         <el-table-column prop="stickerName" label="名称" />
-        <el-table-column prop="stickerUrl" label="图片" />
+        <el-table-column prop="stickerUrl" label="图片">
+          <template #default="scope">
+            <img
+              v-lazy="scope.row.stickerUrl"
+              class="table-sticker-image"
+              alt=""
+            />
+          </template>
+        </el-table-column>
         <el-table-column prop="description" label="描述" />
         <el-table-column prop="operation" label="操作">
           <template #default="scope">
@@ -99,6 +107,10 @@ const deleteHandler = ({ id }) => {
 .sticker-page-component {
   .filter-line {
     margin-bottom: 20px;
+  }
+  .table-sticker-image {
+    height: 50px;
+    width: 50px;
   }
 }
 </style>

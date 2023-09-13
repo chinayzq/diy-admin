@@ -127,3 +127,7 @@ export function getUrlParams(url) {
   }
   return obj;
 }
+export function buildImageUrl(id) {
+  if (id.includes('/diyadmin')) return id;
+  return `/diyadmin/download?fileId=${id}`;
+}

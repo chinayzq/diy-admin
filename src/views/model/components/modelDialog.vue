@@ -8,7 +8,7 @@
     >
       <el-upload
         v-model:file-list="fileList"
-        action="/diyadmin/upload"
+        :action="beseUploadUrl"
         list-type="picture-card"
         :on-preview="handlePictureCardPreview"
       >
@@ -30,7 +30,9 @@ import { Plus } from "@element-plus/icons-vue";
 import { ref, watch } from "vue";
 import { createPhoneColor, getPhoneColor } from "@/api/model";
 import { ElMessage } from "element-plus";
-
+import config from "~/config";
+import { buildImageUrl } from "@/utils/index.js";
+const beseUploadUrl = config[import.meta.env.MODE].uploadUrl;
 const emit = defineEmits();
 const props = defineProps({
   dataset: {
@@ -77,7 +79,7 @@ const saveHandler = () => {
     colorUrlList: fileList.value.map((item) => {
       return {
         colorName: item.colorName || item.name,
-        url: item.response ? item.response.data : item.url,
+        url: buildImageUrl(item.response ? item.response.data : item.url),
       };
     }),
   };
