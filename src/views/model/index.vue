@@ -51,6 +51,13 @@
             >
               Case Color
             </el-button>
+            <el-button
+              type="primary"
+              text
+              @click="editHandler(scope.row, 'MaskImage')"
+            >
+              Mask Image
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -109,12 +116,14 @@ const editHandler = ({ phoneCode }, type) => {
   const titleMap = {
     phoneModel: "Model color",
     phoneCase: "Case Color",
+    MaskImage: "Mask Image",
   };
   //   phoneModel: "机型颜色" - 1,
   //   phoneCase: "手机壳颜色" - 2,
   const typeMap = {
     phoneModel: 1,
     phoneCase: 2,
+    MaskImage: 3,
   };
   modelDialogDatas.value.title = titleMap[type];
   modelDialogDatas.value.type = typeMap[type];
