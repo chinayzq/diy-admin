@@ -1,8 +1,8 @@
 <template>
   <div class="sticker-page-component">
     <div class="filter-line">
-      <el-button type="primary" @click="addNewSticker">新增分类</el-button>
-      <el-button type="primary" @click="getTableDatas">查询</el-button>
+      <el-button type="primary" @click="addNewSticker">New Sticker</el-button>
+      <el-button type="primary" @click="getTableDatas">Search</el-button>
     </div>
     <div class="table-container">
       <el-table
@@ -14,8 +14,8 @@
         style="width: 100%"
       >
         <el-table-column type="index" width="50" />
-        <el-table-column prop="stickerName" label="名称" />
-        <el-table-column prop="stickerUrl" label="图片">
+        <el-table-column prop="stickerName" label="Sticker Name" />
+        <el-table-column prop="stickerUrl" label="Cover Photo">
           <template #default="scope">
             <img
               v-lazy="scope.row.stickerUrl"
@@ -24,14 +24,14 @@
             />
           </template>
         </el-table-column>
-        <el-table-column prop="description" label="描述" />
-        <el-table-column prop="operation" label="操作">
+        <el-table-column prop="description" label="Description" />
+        <el-table-column prop="operation" label="Operation">
           <template #default="scope">
             <el-button type="primary" text @click="editHandler(scope.row)">
-              编辑
+              Edit Sticker
             </el-button>
             <el-button type="danger" text @click="deleteHandler(scope.row)">
-              删除
+              Delete Sticker
             </el-button>
           </template>
         </el-table-column>
@@ -50,7 +50,7 @@ const pageLoading = ref(false);
 const tableData = ref([]);
 const stickerDialogDatas = ref({
   show: false,
-  title: "新增素材",
+  title: "New Sticker",
   datas: {},
 });
 onBeforeMount(() => {
@@ -72,11 +72,11 @@ const dialogCloseHandler = (freshFlag) => {
   stickerDialogDatas.value.datas = {};
 };
 const addNewSticker = () => {
-  stickerDialogDatas.value.title = "新增素材";
+  stickerDialogDatas.value.title = "New Sticker";
   stickerDialogDatas.value.show = true;
 };
 const editHandler = (row) => {
-  stickerDialogDatas.value.title = "编辑素材";
+  stickerDialogDatas.value.title = "Edit Sticker";
   stickerDialogDatas.value.datas = row;
   stickerDialogDatas.value.show = true;
 };

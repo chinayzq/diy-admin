@@ -2,13 +2,13 @@
   <div class="model-page-component">
     <div class="search-line">
       <div class="single-item">
-        <span class="item-label">机型：</span>
+        <span class="item-label">Phone Model：</span>
         <span>
           <el-select
             @change="dataFilterHandler"
             v-model="search.model"
             clearable
-            placeholder="选择机型"
+            placeholder="Choose a phone model"
           >
             <el-option
               v-for="item in modelOptions"
@@ -20,7 +20,7 @@
         </span>
       </div>
       <div class="single-item">
-        <el-button type="primary">查询</el-button>
+        <el-button type="primary">Search</el-button>
       </div>
     </div>
     <div class="table-container">
@@ -33,23 +33,23 @@
         style="width: 100%"
       >
         <el-table-column type="index" width="50" />
-        <el-table-column prop="brandName" label="品牌" />
-        <el-table-column prop="phoneName" label="机型" />
-        <el-table-column prop="operation" label="操作">
+        <el-table-column prop="brandName" label="Brand" />
+        <el-table-column prop="phoneName" label="Model" />
+        <el-table-column prop="operation" label="Operation">
           <template #default="scope">
             <el-button
               type="primary"
               text
               @click="editHandler(scope.row, 'phoneModel')"
             >
-              机型颜色
+              Model color
             </el-button>
             <el-button
               type="primary"
               text
               @click="editHandler(scope.row, 'phoneCase')"
             >
-              手机壳颜色
+              Case Color
             </el-button>
           </template>
         </el-table-column>
@@ -69,7 +69,7 @@ const modelOptions = ref([]);
 const resourceList = ref([]);
 const modelDialogDatas = ref({
   show: false,
-  title: "机型颜色",
+  title: "Model color",
   phoneCode: "",
   type: "",
 });
@@ -107,8 +107,8 @@ const dataFilterHandler = () => {
 };
 const editHandler = ({ phoneCode }, type) => {
   const titleMap = {
-    phoneModel: "机型颜色",
-    phoneCase: "手机壳颜色",
+    phoneModel: "Model color",
+    phoneCase: "Case Color",
   };
   //   phoneModel: "机型颜色" - 1,
   //   phoneCase: "手机壳颜色" - 2,
@@ -141,6 +141,10 @@ const dialogCloseHandler = () => {
     .single-item + .single-item {
       margin-left: 20px;
     }
+  }
+  :deep(.el-button.is-text) {
+    padding: 0 !important;
+    margin-right: 15px;
   }
 }
 </style>

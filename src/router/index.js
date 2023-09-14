@@ -27,6 +27,16 @@ const router = createRouter({
           meta: { title: 'Template' },
         },
         {
+          path: '/template/detail',
+          name: 'templateDetail',
+          component: () => import('@/views/template/model/detail.vue'),
+          meta: {
+            title: 'Template Detail',
+            detail: true,
+            parrentPath: '/template',
+          },
+        },
+        {
           path: '/dictionary',
           name: 'dictionary',
           component: () => import('@/views/dictionary/index.vue'),

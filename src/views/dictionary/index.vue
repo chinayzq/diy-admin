@@ -1,8 +1,8 @@
 <template>
   <div class="dictionary-page">
     <div class="button-line">
-      <el-button type="primary" @click="addHandler">添加分类</el-button>
-      <el-button @click="initTableList">刷新</el-button>
+      <el-button type="primary" @click="addHandler">New Item</el-button>
+      <el-button type="primary" @click="initTableList">Search</el-button>
     </div>
     <div class="table-container">
       <el-table
@@ -13,16 +13,16 @@
         style="width: 100%"
       >
         <el-table-column type="index" width="50" />
-        <el-table-column prop="classCode" label="类别编码" />
-        <el-table-column prop="className" label="类别名称" />
-        <el-table-column prop="description" label="描述" />
-        <el-table-column prop="operation" label="操作" width="190">
+        <el-table-column prop="classCode" label="Category Code" />
+        <el-table-column prop="className" label="Category Name" />
+        <el-table-column prop="description" label="Description" />
+        <el-table-column prop="operation" label="Operation" width="290">
           <template #default="scope">
             <el-button type="primary" text @click="editHandler(scope.row)">
-              编辑
+              Edit
             </el-button>
             <el-button type="danger" text @click="deleteHandler(scope.row)">
-              删除
+              Delete
             </el-button>
           </template>
         </el-table-column>
@@ -45,7 +45,7 @@ const tableData = ref([]);
 const pageLoading = ref(false);
 const dialogVisible = ref(false);
 const dialogData = ref({
-  title: "新增分类",
+  title: "New Category",
   datas: {},
 });
 onBeforeMount(() => {
@@ -64,26 +64,26 @@ const initTableList = () => {
     });
 };
 const addHandler = () => {
-  dialogData.value.title = "新增分类";
+  dialogData.value.title = "New Category";
   dialogData.value.datas = {};
   dialogVisible.value = true;
 };
 const editHandler = (row) => {
-  dialogData.value.title = "编辑分类";
+  dialogData.value.title = "Edit Category";
   dialogData.value.datas = row;
   dialogVisible.value = true;
 };
 const deleteHandler = ({ classId }) => {
-  ElMessageBox.confirm("确定删除该条数据吗?", "警告", {
-    confirmButtonText: "确认",
-    cancelButtonText: "取消",
+  ElMessageBox.confirm("Are you sure to delete this data?", "warning", {
+    confirmButtonText: "Confirm",
+    cancelButtonText: "Cancel",
     type: "warning",
   })
     .then(() => {
       deleteClassById({ classId }).then((res) => {
         if (res.code === 200) {
           ElMessage({
-            message: "删除成功！",
+            message: "delete successful！",
             type: "success",
           });
           initTableList();
@@ -91,7 +91,7 @@ const deleteHandler = ({ classId }) => {
       });
     })
     .catch(() => {
-      console.log("取消删除！");
+      console.log("cancel the delete！");
     });
 };
 const modelCloaseHandler = (freshFlag) => {

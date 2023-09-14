@@ -22,9 +22,14 @@ import { useRouter } from "vue-router";
 const defaultActive = ref("/model");
 const router = useRouter();
 watch(
-  () => router.currentRoute.value.path,
-  (toPath) => {
-    defaultActive.value = toPath;
+  () => router.currentRoute.value,
+  (path) => {
+    console.log("path", path);
+    if (path?.meta?.detail) {
+      defaultActive.value = path.meta.parrentPath;
+    } else {
+      defaultActive.value = path.path;
+    }
   },
   { immediate: true, deep: true }
 );

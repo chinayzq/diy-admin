@@ -15,7 +15,7 @@
       >
         <el-row :gutter="48">
           <el-col :span="12">
-            <el-form-item label="分类名称" prop="stickerName">
+            <el-form-item label="Sticker Name" prop="stickerName">
               <el-input
                 :disabled="props?.dataset?.datas?.id"
                 v-model="formData.stickerName"
@@ -23,7 +23,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="分类图片" prop="stickerUrl">
+            <el-form-item label="Cover Photo" prop="stickerUrl">
               <div class="form-image-line" v-loading="uploadLoading">
                 <el-upload
                   class="avatar-uploader"
@@ -53,7 +53,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="描述" prop="description">
+            <el-form-item label="Description" prop="description">
               <el-input
                 :rows="2"
                 type="textarea"
@@ -62,7 +62,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="素材列表" prop="stickerChildlist">
+            <el-form-item label="Sticker Child List" prop="stickerChildlist">
               <el-upload
                 v-model:file-list="formData.stickerChildlist"
                 :action="beseUploadUrl"
@@ -76,16 +76,16 @@
         </el-row>
       </el-form>
       <div class="button-container">
-        <el-button @click="handleClose">取消</el-button>
+        <el-button @click="handleClose">Cancel</el-button>
         <el-button
           type="primary"
           @click="submitHandler"
           v-loading="submitLoading"
-          >保存</el-button
+          >Save</el-button
         >
       </div>
     </el-dialog>
-    <el-dialog v-model="previewDialog.show" title="图片预览">
+    <el-dialog v-model="previewDialog.show" title="Photo Preview">
       <div class="preview-dialog-container">
         <img w-full v-lazy="previewDialog.url" alt="Preview Image" />
       </div>
@@ -117,12 +117,14 @@ const formData = ref({
 
 const checkUrlUpload = (rule, value, callback) => {
   if (!formData.value.stickerUrl) {
-    return callback(new Error("请上传分类图片"));
+    return callback(new Error("Please upload the Cover Photo"));
   }
   callback();
 };
 const formRules = ref({
-  stickerName: [{ required: true, message: "请输入分类名称", trigger: "blur" }],
+  stickerName: [
+    { required: true, message: "Please enter a sticker name", trigger: "blur" },
+  ],
   stickerUrl: [{ validator: checkUrlUpload, trigger: ["change", "blur"] }],
 });
 const props = defineProps({
@@ -206,7 +208,7 @@ const submitHandler = () => {
         .then((res) => {
           if (res.code === 200) {
             ElMessage({
-              message: "保存成功！",
+              message: "Successfully saved!",
               type: "success",
             });
             handleClose(true);
