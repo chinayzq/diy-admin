@@ -60,7 +60,7 @@ const initAndDisplayDatas = (datas) => {
   const { type, phoneCode } = datas;
   getPhoneColor({ type, phoneCode }).then((res) => {
     if (res.code === 200) {
-      fileList.value = res.data.colorUrlList;
+      fileList.value = res.data[0].colorUrlList;
     }
   });
 };

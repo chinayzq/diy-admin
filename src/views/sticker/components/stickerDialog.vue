@@ -4,6 +4,7 @@
       v-model="props.dataset.show"
       :title="props.dataset.title"
       width="800"
+      top="65px"
       :before-close="handleClose"
     >
       <el-form
@@ -63,14 +64,18 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="Sticker Child List" prop="stickerChildlist">
-              <el-upload
-                v-model:file-list="formData.stickerChildlist"
-                :action="beseUploadUrl"
-                list-type="picture-card"
-                :on-preview="(value) => handlePictureCardPreview(value, 'list')"
-              >
-                <el-icon><Plus /></el-icon>
-              </el-upload>
+              <div class="sticker-list-container">
+                <el-upload
+                  v-model:file-list="formData.stickerChildlist"
+                  :action="beseUploadUrl"
+                  list-type="picture-card"
+                  :on-preview="
+                    (value) => handlePictureCardPreview(value, 'list')
+                  "
+                >
+                  <el-icon><Plus /></el-icon>
+                </el-upload>
+              </div>
             </el-form-item>
           </el-col>
         </el-row>
@@ -270,6 +275,10 @@ const submitHandler = () => {
       height: 400px;
       width: 400px;
     }
+  }
+  .sticker-list-container {
+    max-height: 400px;
+    overflow: auto;
   }
 }
 </style>

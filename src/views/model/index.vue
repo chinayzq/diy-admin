@@ -7,6 +7,7 @@
           <el-select
             @change="dataFilterHandler"
             v-model="search.model"
+            filterable
             clearable
             placeholder="Choose a phone model"
           >
