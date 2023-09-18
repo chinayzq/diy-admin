@@ -112,5 +112,9 @@ const deleteHandler = ({ id }) => {
     height: 50px;
     width: 50px;
   }
+  :deep(.el-button.is-text) {
+    padding: 0 !important;
+    margin-right: 15px;
+  }
 }
 </style>

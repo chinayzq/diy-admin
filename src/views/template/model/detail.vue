@@ -4,6 +4,19 @@
       <div class="common-title">Base Map Selection</div>
       <el-select
         class="model-selector"
+        v-model="oneLevelCategory"
+        filterable
+        placeholder="Slect One Level Category"
+      >
+        <el-option
+          v-for="item in oneLevelOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+      <el-select
+        class="model-selector"
         v-model="selectModel"
         filterable
         @change="modelChange"
@@ -112,8 +125,10 @@
 import { ref, onBeforeMount } from "vue";
 import { getPhoneColor, getModelList } from "@/api/model";
 import { getStickerList } from "@/api/sticker";
+import { getItemByClassId } from "@/api/dictionary";
 onBeforeMount(() => {
   initModelList();
+  initOneLevelOptions();
   initStickerList();
 });
 
@@ -197,6 +212,23 @@ const setSelectImage = (type, url) => {
       selectMaskImage.value = url;
       break;
   }
+};
+
+const oneLevelCategory = ref(null);
+const oneLevelOptions = ref([]);
+const initOneLevelOptions = () => {
+  getItemByClassId({
+    classId: "19",
+  }).then((res) => {
+    if (res.code === 200) {
+      oneLevelOptions.value = res.data.map((item) => {
+        return {
+          label: item.itemName,
+          value: item.itemCode,
+        };
+      });
+    }
+  });
 };
 </script>
 

@@ -3,13 +3,77 @@
     <div class="filter-line">
       <el-button type="primary" @click="addNewTemplate">New Template</el-button>
     </div>
+    <div class="table-container">
+      <el-table
+        height="530"
+        :data="tableData"
+        v-loading="pageLoading"
+        border
+        stripe
+        style="width: 100%"
+      >
+        <el-table-column type="index" width="50" />
+        <el-table-column prop="itemCode" label="Template Category Name" />
+        <el-table-column prop="extend1" label="Description" />
+        <el-table-column prop="operation" label="Operation">
+          <template #default="scope">
+            <el-button type="primary" text @click="editHandler(scope.row)">
+              Edit Template List
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <TemplateListDialog
+      :dataset="templateDialogDatas"
+      @close="dialogCloseHandler"
+    />
   </div>
 </template>
 
 <script setup name="template-list-page">
 import { useRouter } from "vue-router";
-
+import { getItemByClassId } from "@/api/dictionary";
+import { onBeforeMount, ref } from "vue";
+import TemplateListDialog from "./components/TemplateListDialog.vue";
 const router = useRouter();
+
+onBeforeMount(() => {
+  getTableList();
+});
+
+const pageLoading = ref(false);
+const tableData = ref([]);
+const getTableList = () => {
+  pageLoading.value = true;
+  getItemByClassId({
+    classId: "19",
+  })
+    .then((res) => {
+      if (res.code === 200) {
+        tableData.value = res.data;
+      }
+    })
+    .finally(() => {
+      pageLoading.value = false;
+    });
+};
+
+const templateDialogDatas = ref({
+  show: false,
+  title: "Template List",
+  typeCode: null,
+});
+const editHandler = ({ itemCode }) => {
+  templateDialogDatas.value.show = true;
+  templateDialogDatas.value.typeCode = itemCode;
+};
+const dialogCloseHandler = (freshFlag) => {
+  if (freshFlag === true) getTableDatas();
+  templateDialogDatas.value.show = false;
+  templateDialogDatas.value.typeCode = "";
+};
+
 const addNewTemplate = () => {
   router.push({
     path: "/template/detail",
@@ -21,6 +85,10 @@ const addNewTemplate = () => {
 .template-list-page {
   .filter-line {
     margin-bottom: 20px;
+  }
+  :deep(.el-button.is-text) {
+    padding: 0 !important;
+    margin-right: 15px;
   }
 }
 </style>
