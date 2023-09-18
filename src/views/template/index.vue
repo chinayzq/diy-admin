@@ -17,6 +17,9 @@
         <el-table-column prop="extend1" label="Description" />
         <el-table-column prop="operation" label="Operation">
           <template #default="scope">
+            <el-button type="primary" text @click="addHandler(scope.row)">
+              Add Template
+            </el-button>
             <el-button type="primary" text @click="editHandler(scope.row)">
               Edit Template List
             </el-button>
@@ -74,6 +77,14 @@ const dialogCloseHandler = (freshFlag) => {
   templateDialogDatas.value.typeCode = "";
 };
 
+const addHandler = ({ itemCode }) => {
+  router.push({
+    path: "/template/detail",
+    query: {
+      typeCode: itemCode,
+    },
+  });
+};
 const addNewTemplate = () => {
   router.push({
     path: "/template/detail",

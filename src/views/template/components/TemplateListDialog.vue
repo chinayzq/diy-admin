@@ -136,6 +136,7 @@ const jumpToTemplateDetail = ({ templateId }) => {
     path: "/template/detail",
     query: {
       templateId,
+      typeCode: props.dataset.typeCode,
     },
   });
 };

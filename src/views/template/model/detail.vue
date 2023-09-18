@@ -126,6 +126,7 @@ import { ref, onBeforeMount } from "vue";
 import { getPhoneColor, getModelList } from "@/api/model";
 import { getStickerList } from "@/api/sticker";
 import { getItemByClassId } from "@/api/dictionary";
+import { useRoute } from "vue-router";
 onBeforeMount(() => {
   initModelList();
   initOneLevelOptions();
@@ -160,6 +161,7 @@ const initModelList = () => {
           label: item.phoneName,
         };
       });
+      console.log("modelOptions.value", modelOptions.value);
     }
   });
 };
@@ -214,21 +216,30 @@ const setSelectImage = (type, url) => {
   }
 };
 
+const route = useRoute();
 const oneLevelCategory = ref(null);
 const oneLevelOptions = ref([]);
 const initOneLevelOptions = () => {
   getItemByClassId({
     classId: "19",
-  }).then((res) => {
-    if (res.code === 200) {
-      oneLevelOptions.value = res.data.map((item) => {
-        return {
-          label: item.itemName,
-          value: item.itemCode,
-        };
-      });
-    }
-  });
+  })
+    .then((res) => {
+      if (res.code === 200) {
+        oneLevelOptions.value = res.data.map((item) => {
+          return {
+            label: item.itemName,
+            value: item.itemCode,
+          };
+        });
+        console.log("oneLevelOptions.value", oneLevelOptions.value);
+      }
+    })
+    .finally(() => {
+      const { typeCode } = route.query;
+      if (typeCode) {
+        oneLevelCategory.value = typeCode;
+      }
+    });
 };
 </script>
 
