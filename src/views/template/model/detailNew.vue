@@ -98,6 +98,7 @@
             maskImage: `url(${selectMaskImage})`,
           }"
           class="mask-container"
+          @click="onClick(-1)"
         >
           <!-- 该图只为撑起来mask容器 -->
           <img
@@ -106,13 +107,18 @@
             alt=""
           />
           <div
-            @mousedown="dragStartHandler"
-            @mousemove="
+            @touchstart="
               (event) => {
-                dragHandler(event, item);
+                onTouchstart(event, item);
               }
             "
-            @mouseup="dragEndHandler"
+            @touchmove="
+              (event) => {
+                onTouchmove(event, item);
+              }
+            "
+            @mousedown="onMousedown"
+            @click.stop="onClick(item.id)"
             v-for="item in dragStickerList"
             :key="item.id"
             :style="{
@@ -122,19 +128,12 @@
               left: `${item.left}px`,
               transform: `rotate(${item.rotate}deg)`,
               zIndex: item.active ? 9999 : `${item.zIndex}`,
+              backgroundImage: `url(${item.url})`,
             }"
-            @click.stop="dragImageClick(item)"
             :class="['drag-image', item.active && 'drag-image-active']"
           >
-            <img
-              draggable="false"
-              style="height: 100%; width: 100%"
-              :src="item.url"
-              alt=""
-            />
             <template v-if="item.active">
               <img
-                draggable="false"
                 @click.stop="iconDeleteHandler(item)"
                 :src="DeleteIcon"
                 class="operation-icon delete-icon"
@@ -142,40 +141,38 @@
               />
               <!-- <span class="replace-icon"> Replace </span> -->
               <img
-                draggable="false"
                 @click.stop="iconCopyHandler(item)"
                 :src="PlusIcon"
                 class="operation-icon plus-icon"
                 alt=""
               />
               <div
-                @mousedown.stop.prevent="
+                @mousedown.stop="
                   (event) => {
                     resizeStart(event, item);
                   }
                 "
-                @mousemove.stop.prevent="
+                @mousemove="
                   (event) => {
                     resizeMove(event, item);
                   }
                 "
-                @mouseup.stop.prevent="
+                @mouseup.stop="
                   (event) => {
                     resizeEnd(event, item);
                   }
                 "
                 class="operation-icon resize-icon"
               >
-                <img draggable="false" :src="ResizeIcon" alt="" />
+                <img :src="ResizeIcon" alt="" />
               </div>
               <img
-                draggable="false"
-                @mousedown.stop.prevent="
+                @mousedown.stop="
                   (event) => {
                     rotateStart(event, item);
                   }
                 "
-                @mousemove.stop.prevent="
+                @mousemove="
                   (event) => {
                     rotating(event, item);
                   }
@@ -434,11 +431,10 @@ const getMaxIndex = () => {
 const draggingItem = {
   x: 0,
   y: 0,
-  start: false,
 };
 const dragHandler = (event, item) => {
   const { clientX, clientY } = event;
-  if (clientY === 0 || clientX === 0 || !draggingItem.start) return;
+  if (clientY === 0 || clientX === 0) return;
   const xDiff = clientX - draggingItem.x;
   const yDiff = clientY - draggingItem.y;
   draggingItem.x = clientX;
@@ -447,14 +443,11 @@ const dragHandler = (event, item) => {
   item.left = item.left + xDiff;
 };
 const dragStartHandler = (event, item) => {
-  draggingItem.start = true;
   const { clientX, clientY } = event;
   draggingItem.x = clientX;
   draggingItem.y = clientY;
 };
-const dragEndHandler = (event, item) => {
-  draggingItem.start = false;
-};
+const dragEndHandler = (event, item) => {};
 const dragoverHandler = (event) => {
   event.preventDefault();
 };
@@ -513,19 +506,17 @@ let rotateObj = {
   rotating: false,
   rotate: 0,
 };
-let pointA = {
-  X: 0,
-  Y: 0,
-};
+let pointA = {};
 let pointB = {};
 let pointC = {};
 const rotateStart = (event, item) => {
-  // event.preventDefault();
+  event.preventDefault();
   rotateObj.rotating = true;
   // 计算元素中心点
   const { height, width } = item;
   // pointA.X = width / 2 + event.target.offsetLeft;
   // pointA.Y = height / 2 + event.target.offsetHeight;
+  console.log("pointA", pointA);
   // 记录起始坐标
   pointB.X = event.pageX;
   pointB.Y = event.pageY;
@@ -566,15 +557,13 @@ const rotating = (event, item) => {
   } else {
     allA = angleA; //叉乘结果为正表示顺时针旋转，顺时针旋转加度数
   }
-  console.log("allA", allA);
   // 如果上一次按下旋转已经有度数,需要加上上一次的度数
   if (rotateObj.rotate) {
     allA += rotateObj.rotate;
   }
   item.rotate = allA;
 };
-
-const rotateEnd = (event, item) => {
+const rotateEnd = () => {
   console.log("rotateEnd");
   rotateObj.rotating = false;
   rotateObj.rotate = 0;
@@ -583,9 +572,61 @@ const rotateEnd = (event, item) => {
   pointC = {};
 };
 
-const eventEndHandler = () => {
-  rotateEnd();
-  resizeEnd();
+/**
+ * 开始坐标
+ */
+const startPoint = {};
+/**
+ * 开始矩形区域
+ */
+const startRect = {};
+const onTouchstart = (e, item) => {
+  console.log("11111");
+  const { clientX, clientY } = e.changedTouches[0];
+  startPoint = { x: clientX, y: clientY };
+  startRect = { ...item };
+};
+/**
+ * 接触点改变, 滑动时
+ */
+const onTouchmove = (e, current) => {
+  const { clientX, clientY } = e.changedTouches[0];
+  const { distX, distY } = getDistance({ x: clientX, y: clientY });
+  /**
+   * 矩形移动的距离
+   */
+  current.top = distY;
+  /**
+   * 矩形移动的距离
+   */
+  current.left = distX;
+};
+
+const getDistance = (point) => {
+  /**
+   * 手指横向移动距离
+   */
+  const diffX = point.x - startPoint.x;
+  /**
+   * 手指纵向移动距离
+   */
+  const diffY = point.y - startPoint.y;
+  /**
+   * 矩形移动的距离
+   */
+  const distX = startRect.x + diffX;
+  /**
+   * 矩形移动的距离
+   */
+  const distY = startRect.y + diffY;
+
+  return { distX, distY };
+};
+// 清除所有拖拽图形active状态
+const onClick = (id) => {
+  dragStickerList.value.forEach((item) => {
+    item.active = item.id === id;
+  });
 };
 </script>
 
@@ -665,7 +706,6 @@ const eventEndHandler = () => {
         // -webkit-mask-image: url(https://oss.data.ideaskins.com.cn/diy/2023-5-5/4ea960dd-2565-4069-aa73-b6abaa5e1e27.png);
       }
       .drag-image {
-        user-select: none;
         position: absolute;
         cursor: pointer;
         background-image: url("../../../assets/images/login_background2.jpg");
