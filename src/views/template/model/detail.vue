@@ -112,8 +112,10 @@
                 dragHandler(event, item);
               }
             "
-            @mouseup="dragEndHandler"
+            @mouseup="eventEndHandler"
+            @click.stop="dragImageClick(item)"
             v-for="item in dragStickerList"
+            :id="`drag_dom_${item.id}`"
             :key="item.id"
             :style="{
               height: `${item.height}px`,
@@ -123,7 +125,6 @@
               transform: `rotate(${item.rotate}deg)`,
               zIndex: item.active ? 9999 : `${item.zIndex}`,
             }"
-            @click.stop="dragImageClick(item)"
             :class="['drag-image', item.active && 'drag-image-active']"
           >
             <img
@@ -455,9 +456,6 @@ const dragStartHandler = (event, item) => {
 const dragEndHandler = (event, item) => {
   draggingItem.start = false;
 };
-const dragoverHandler = (event) => {
-  event.preventDefault();
-};
 
 // icon - 删除
 const iconDeleteHandler = ({ id }) => {
@@ -523,15 +521,17 @@ const rotateStart = (event, item) => {
   // event.preventDefault();
   rotateObj.rotating = true;
   // 计算元素中心点
-  const { height, width } = item;
-  // pointA.X = width / 2 + event.target.offsetLeft;
-  // pointA.Y = height / 2 + event.target.offsetHeight;
+  const { height, width, id } = item;
+  const currentDom = document.getElementById(`drag_dom_${id}`);
+  const { left, top } = currentDom.getBoundingClientRect();
+  pointA.X = width / 2 + left;
+  pointA.Y = height / 2 + top;
   // 记录起始坐标
   pointB.X = event.pageX;
   pointB.Y = event.pageY;
   // 计算元素中心点
-  pointA.X = event.pageX - width / 2;
-  pointA.Y = event.pageY - height / 2;
+  // pointA.X = event.pageX - width / 2;
+  // pointA.Y = event.pageY - height / 2;
   // 记录已有旋转角度
   rotateObj.rotate = item.rotate;
 };
@@ -586,6 +586,7 @@ const rotateEnd = (event, item) => {
 const eventEndHandler = () => {
   rotateEnd();
   resizeEnd();
+  dragEndHandler();
 };
 </script>
 
