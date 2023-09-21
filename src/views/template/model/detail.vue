@@ -97,6 +97,11 @@
             zIndex: 3,
             maskImage: `url(${selectMaskImage})`,
           }"
+          @mousemove="
+            (event) => {
+              moveHandler(event, item);
+            }
+          "
           class="mask-container"
         >
           <!-- 该图只为撑起来mask容器 -->
@@ -106,14 +111,13 @@
             alt=""
           />
           <div
-            @mousedown="dragStartHandler"
-            @mousemove="
+            @mousedown="
               (event) => {
-                dragHandler(event, item);
+                dragStartHandler(event, item);
               }
             "
+            @click.stop="activeItem(item)"
             @mouseup="eventEndHandler"
-            @click.stop="dragImageClick(item)"
             v-for="item in dragStickerList"
             :id="`drag_dom_${item.id}`"
             :key="item.id"
@@ -155,16 +159,6 @@
                     resizeStart(event, item);
                   }
                 "
-                @mousemove.stop.prevent="
-                  (event) => {
-                    resizeMove(event, item);
-                  }
-                "
-                @mouseup.stop.prevent="
-                  (event) => {
-                    resizeEnd(event, item);
-                  }
-                "
                 class="operation-icon resize-icon"
               >
                 <img draggable="false" :src="ResizeIcon" alt="" />
@@ -174,16 +168,6 @@
                 @mousedown.stop.prevent="
                   (event) => {
                     rotateStart(event, item);
-                  }
-                "
-                @mousemove.stop.prevent="
-                  (event) => {
-                    rotating(event, item);
-                  }
-                "
-                @mouseup.stop="
-                  (event) => {
-                    rotateEnd(event, item);
                   }
                 "
                 :src="RotateIcon"
@@ -406,7 +390,7 @@ const addStickerToGraph = ({ url }) => {
     active: false,
   });
 };
-const dragImageClick = (dragItem) => {
+const activeItem = (dragItem) => {
   clearActiveState();
   dragItem.active = true;
 };
@@ -431,6 +415,20 @@ const getMaxIndex = () => {
   }
 };
 
+let currentItem = {};
+// move事件处理
+const moveHandler = (event) => {
+  if (draggingItem.start) {
+    dragHandler(event, currentItem);
+  }
+  if (resizeObj.start) {
+    resizeMove(event, currentItem);
+  }
+  if (rotateObj.start) {
+    rotating(event, currentItem);
+  }
+};
+
 // icon - 拖拽
 const draggingItem = {
   x: 0,
@@ -448,6 +446,8 @@ const dragHandler = (event, item) => {
   item.left = item.left + xDiff;
 };
 const dragStartHandler = (event, item) => {
+  currentItem = item;
+  console.log("currentItem", currentItem);
   draggingItem.start = true;
   const { clientX, clientY } = event;
   draggingItem.x = clientX;
@@ -481,19 +481,20 @@ const iconCopyHandler = (item) => {
 
 // icon - 改变大小
 const resizeObj = {
-  resizing: false,
+  start: false,
   x: 0,
   y: 0,
 };
 const resizeStart = (event, item) => {
   event.preventDefault();
+  currentItem = item;
   const { clientX, clientY } = event;
-  resizeObj.resizing = true;
+  resizeObj.start = true;
   resizeObj.x = clientX;
   resizeObj.y = clientY;
 };
 const resizeMove = (event, item) => {
-  if (!resizeObj.resizing) return;
+  if (!resizeObj.start) return;
   const { clientX, clientY } = event;
   const xDiff = clientX - resizeObj.x;
   const yDiff = clientY - resizeObj.y;
@@ -503,12 +504,12 @@ const resizeMove = (event, item) => {
   item.width = item.width + xDiff;
 };
 const resizeEnd = (event, item) => {
-  resizeObj.resizing = false;
+  resizeObj.start = false;
 };
 
 // icon - 旋转
 let rotateObj = {
-  rotating: false,
+  start: false,
   rotate: 0,
 };
 let pointA = {
@@ -518,8 +519,8 @@ let pointA = {
 let pointB = {};
 let pointC = {};
 const rotateStart = (event, item) => {
-  // event.preventDefault();
-  rotateObj.rotating = true;
+  currentItem = item;
+  rotateObj.start = true;
   // 计算元素中心点
   const { height, width, id } = item;
   const currentDom = document.getElementById(`drag_dom_${id}`);
@@ -536,7 +537,7 @@ const rotateStart = (event, item) => {
   rotateObj.rotate = item.rotate;
 };
 const rotating = (event, item) => {
-  if (!rotateObj.rotating) return;
+  if (!rotateObj.start) return;
   pointC.X = event.pageX;
   pointC.Y = event.pageY; // 获取结束点坐标
   // 计算出旋转角度
@@ -576,11 +577,12 @@ const rotating = (event, item) => {
 
 const rotateEnd = (event, item) => {
   console.log("rotateEnd");
-  rotateObj.rotating = false;
+  rotateObj.start = false;
   rotateObj.rotate = 0;
   pointA = {};
   pointB = {};
   pointC = {};
+  // currentItem = {};
 };
 
 const eventEndHandler = () => {
