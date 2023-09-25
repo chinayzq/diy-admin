@@ -49,7 +49,7 @@ export default ({ mode }) =>
       },
     },
     build: {
-      outDir: 'diyAdmin',
+      outDir: 'diyadmin',
     },
     server: {
       hmr: true,
