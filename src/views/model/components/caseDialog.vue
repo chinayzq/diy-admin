@@ -1,0 +1,284 @@
+<template>
+  <div class="phone-case-dialog">
+    <el-dialog
+      v-model="props.dataset.show"
+      :title="props.dataset.title"
+      width="1000"
+      :before-close="handleClose"
+    >
+      <el-button type="primary" @click="addNewCase">new Case</el-button>
+      <div class="single-item" v-for="(item, index) in itemList" :key="index">
+        <div class="left-part" v-loading="item.uploadLoading">
+          <el-upload
+            class="avatar-uploader"
+            :action="beseUploadUrl"
+            :with-credentials="true"
+            :show-file-list="false"
+            :before-upload="
+              () => {
+                beforeUploadHandler(index);
+              }
+            "
+            :on-success="
+              (response, uploadFile) => {
+                handleAvatarSuccess(response, uploadFile, index);
+              }
+            "
+          >
+            <img
+              v-if="item.url"
+              @click.stop="handlePictureCardPreview(item.url)"
+              v-lazy="item.url"
+              class="avatar"
+            />
+            <el-icon v-else class="el-icon-plus avatar-uploader-icon"
+              ><Plus
+            /></el-icon>
+          </el-upload>
+          <el-icon
+            @click="iconDelete(item)"
+            v-show="item.url"
+            class="el-icon-delete"
+            ><Delete
+          /></el-icon>
+        </div>
+        <div class="right-part">
+          <el-row :gutter="48">
+            <el-col :span="12" class="single-item-line">
+              <span class="item-label"> Color Name： </span>
+              <el-input
+                v-model="item.colorName"
+                placeholder="color name"
+              ></el-input>
+            </el-col>
+            <el-col :span="12" class="single-item-line">
+              <span class="item-label"> Current Price： </span>
+              <el-input
+                v-model="item.curPrice"
+                placeholder="current price"
+              ></el-input>
+            </el-col>
+            <el-col :span="12" class="single-item-line">
+              <span class="item-label"> Original Price： </span>
+              <el-input
+                v-model="item.oriPrice"
+                placeholder="original price"
+              ></el-input>
+            </el-col>
+            <el-col :span="12" class="single-item-line">
+              <span class="item-label"> Description： </span>
+              <el-input
+                v-model="item.description"
+                placeholder="description"
+              ></el-input>
+            </el-col>
+            <el-col :span="12" class="single-item-line">
+              <span class="item-label"> Size Description： </span>
+              <el-input
+                v-model="item.extend1"
+                placeholder="size description"
+              ></el-input>
+            </el-col>
+            <el-col :span="12" class="single-item-line">
+              <span class="item-label"> Camera Description： </span>
+              <el-input
+                v-model="item.extend2"
+                placeholder="camera description"
+              ></el-input>
+            </el-col>
+            <el-col :span="12" class="single-item-line">
+              <span class="item-label"> SKU： </span>
+              <el-input v-model="item.extend3" placeholder="sku"></el-input>
+            </el-col>
+            <el-col
+              :span="12"
+              class="single-item-line"
+              style="display: flex; justify-content: end"
+            >
+              <el-button type="danger" @click="deleteCurrentItem(index)">
+                Delete Item
+              </el-button>
+            </el-col>
+          </el-row>
+        </div>
+      </div>
+      <div class="button-container">
+        <el-button @click="handleClose">Cancel</el-button>
+        <el-button type="primary" @click="saveHandler">Save</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog v-model="previewDialog.show">
+      <img w-full :src="previewDialog.url" alt="Preview Image" />
+    </el-dialog>
+  </div>
+</template>
+
+<script setup>
+import { Plus } from "@element-plus/icons-vue";
+import { ref, watch } from "vue";
+import { createPhoneColor, getPhoneColor } from "@/api/model";
+import { ElMessage } from "element-plus";
+import config from "~/config";
+import { buildImageUrl } from "@/utils/index.js";
+const beseUploadUrl = config[import.meta.env.MODE].uploadUrl;
+const emit = defineEmits();
+const props = defineProps({
+  dataset: {
+    type: Object,
+    default() {
+      return {};
+    },
+  },
+});
+watch(
+  props.dataset,
+  (datas) => {
+    initAndDisplayDatas(datas);
+  },
+  { deep: true }
+);
+
+const itemList = ref([]);
+const initAndDisplayDatas = (datas) => {
+  if (!datas.type) return;
+  const { type, phoneCode } = datas;
+  getPhoneColor({ type, phoneCode }).then((res) => {
+    if (res.code === 200) {
+      itemList.value = res.data[0].colorUrlList;
+    }
+  });
+};
+
+const saveHandler = () => {
+  const params = {
+    type: 2,
+    phoneCode: props.dataset.phoneCode,
+    colorUrlList: itemList.value.map((item) => {
+      return {
+        url: item.url,
+        colorName: item.colorName,
+        curPrice: item.curPrice,
+        oriPrice: item.oriPrice,
+        description: item.description,
+        extend1: item.extend1,
+        extend2: item.extend2,
+        extend3: item.extend3,
+      };
+    }),
+  };
+  createPhoneColor(params).then((res) => {
+    if (res.code === 200) {
+      ElMessage({
+        message: "Successfully saved!",
+        type: "success",
+      });
+      handleClose(true);
+    }
+  });
+};
+
+const addNewCase = () => {
+  itemList.value.unshift({
+    url: null,
+    colorName: null,
+    curPrice: null,
+    oriPrice: null,
+    description: null,
+    extend1: null,
+    extend2: null,
+    extend3: null,
+    uploadLoading: false,
+  });
+};
+const iconDelete = (item) => {
+  item.url = "";
+};
+const deleteCurrentItem = (index) => {
+  itemList.value.splice(index, 1);
+};
+const handleClose = () => {
+  emit("close");
+};
+
+const previewDialog = ref({
+  show: false,
+  url: "",
+});
+const handlePictureCardPreview = (uploadFile) => {
+  previewDialog.value.url = uploadFile;
+  previewDialog.value.show = true;
+};
+
+const beforeUploadHandler = (index) => {
+  itemList.value[index].uploadLoading = true;
+};
+const handleAvatarSuccess = (response, uploadFile, index) => {
+  itemList.value[index].url = buildImageUrl(response.data);
+  itemList.value[index].uploadLoading = false;
+};
+</script>
+
+<style lang="less" scoped>
+.phone-case-dialog {
+  .button-container {
+    margin-top: 10px;
+    text-align: right;
+  }
+  .single-item-line {
+    display: flex;
+    align-items: center;
+    .item-label {
+      display: inline-block;
+      min-width: 135px;
+      text-align: right;
+    }
+  }
+  .single-item {
+    display: flex;
+    margin-top: 20px;
+    min-height: 222px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    .left-part {
+      min-width: 220px;
+      display: flex;
+    }
+    .right-part {
+      display: flex;
+    }
+    .avatar-uploader {
+      // border: 1px dotted #ccc;
+      // height: 80px;
+      // width: 80px;
+    }
+    .avatar-uploader .el-upload {
+      border: 1px dashed #d9d9d9;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .avatar-uploader .el-upload:hover {
+      border-color: #409eff;
+    }
+    .avatar-uploader-icon {
+      color: #8c939d;
+      width: 110px;
+      height: 110px;
+      text-align: center;
+      border: 1px solid #ccc;
+    }
+    .avatar {
+      width: 110px;
+      // width: 80px;
+      // height: 80px;
+      display: block;
+    }
+    .el-icon-delete {
+      color: #ff0000;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+  }
+}
+</style>

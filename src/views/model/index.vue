@@ -45,11 +45,7 @@
             >
               Model color
             </el-button>
-            <el-button
-              type="primary"
-              text
-              @click="editHandler(scope.row, 'phoneCase')"
-            >
+            <el-button type="primary" text @click="caseEditHandler(scope.row)">
               Case Color
             </el-button>
             <el-button
@@ -64,6 +60,7 @@
       </el-table>
     </div>
     <ModelDialog :dataset="modelDialogDatas" @close="dialogCloseHandler" />
+    <CaseDialog :dataset="caseDialogDatas" @close="caseDialogCloseHandler" />
   </div>
 </template>
 
@@ -71,16 +68,11 @@
 import { onMounted, ref } from "vue";
 import { getModelList } from "@/api/model.js";
 import ModelDialog from "./components/modelDialog.vue";
+import CaseDialog from "./components/caseDialog.vue";
 const tableData = ref([]);
 const pageLoading = ref(false);
 const modelOptions = ref([]);
 const resourceList = ref([]);
-const modelDialogDatas = ref({
-  show: false,
-  title: "Model color",
-  phoneCode: "",
-  type: "",
-});
 const search = ref({
   model: "",
 });
@@ -113,6 +105,28 @@ const dataFilterHandler = () => {
     }
   });
 };
+
+const caseDialogDatas = ref({
+  show: false,
+  title: "Case Color",
+  phoneCode: "",
+  type: 2,
+});
+const caseEditHandler = ({ phoneCode }) => {
+  caseDialogDatas.value.phoneCode = phoneCode;
+  caseDialogDatas.value.show = true;
+};
+const caseDialogCloseHandler = () => {
+  caseDialogDatas.value.phoneCode = "";
+  caseDialogDatas.value.show = false;
+};
+
+const modelDialogDatas = ref({
+  show: false,
+  title: "Model color",
+  phoneCode: "",
+  type: "",
+});
 const editHandler = ({ phoneCode }, type) => {
   const titleMap = {
     phoneModel: "Model color",
@@ -131,6 +145,7 @@ const editHandler = ({ phoneCode }, type) => {
   modelDialogDatas.value.phoneCode = phoneCode;
   modelDialogDatas.value.show = true;
 };
+
 const dialogCloseHandler = () => {
   modelDialogDatas.value.type = "";
   modelDialogDatas.value.phoneCode = "";
