@@ -127,11 +127,12 @@ export function getUrlParams(url) {
   }
   return obj;
 }
+// 拼接图片地址
 export function buildImageUrl(id) {
   if (id.includes('/diyadmin')) return id;
   return `/diyadmin/download?fileId=${id}`;
 }
-
+// 生成唯一的id
 export function uuid() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     var r = (Math.random() * 16) | 0,

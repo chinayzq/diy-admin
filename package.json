@@ -11,9 +11,11 @@
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
     "axios": "^0.21.1",
+    "dom-to-image": "^2.6.0",
     "echarts": "^5.3.3",
     "element-plus": "^2.2.5",
     "esbuild-windows-64": "^0.15.18",
+    "html2canvas": "^1.4.1",
     "js-cookie": "^3.0.5",
     "pushstate-server": "^3.1.0",
     "qs": "^6.9.6",

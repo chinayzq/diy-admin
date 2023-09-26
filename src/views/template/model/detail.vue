@@ -1,39 +1,58 @@
 <template>
-  <div class="template-detail-component" @click="clearActiveState">
+  <div
+    class="template-detail-component"
+    v-loading="saveLoading"
+    element-loading-text="效果图拼命渲染中..."
+    @click="clearActiveState"
+  >
     <div class="basic-image-part">
       <div class="common-title">Base Map Selection</div>
-      <el-input
-        v-model="templateName"
-        class="model-selector"
-        placeholder="Please enter a template name"
-      ></el-input>
-      <el-select
-        class="model-selector"
-        v-model="oneLevelCategory"
-        filterable
-        placeholder="Slect One Level Category"
+      <el-form
+        label-position="top"
+        label-width="120px"
+        ref="templateFormIns"
+        :rules="formRules"
+        :model="formData"
       >
-        <el-option
-          v-for="item in oneLevelOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        />
-      </el-select>
-      <el-select
-        class="model-selector"
-        v-model="selectModel"
-        filterable
-        @change="modelChange"
-        placeholder="Select Model"
-      >
-        <el-option
-          v-for="item in modelOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        />
-      </el-select>
+        <el-form-item prop="templateName">
+          <el-input
+            v-model="formData.templateName"
+            class="model-selector"
+            placeholder="Please enter a template name"
+          ></el-input>
+        </el-form-item>
+        <el-form-item prop="oneLevelCategory">
+          <el-select
+            class="model-selector"
+            v-model="formData.oneLevelCategory"
+            filterable
+            placeholder="Slect One Level Category"
+          >
+            <el-option
+              v-for="item in oneLevelOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item prop="selectModel">
+          <el-select
+            class="model-selector"
+            v-model="formData.selectModel"
+            filterable
+            @change="modelChange"
+            placeholder="Select Model"
+          >
+            <el-option
+              v-for="item in modelOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
       <div v-loading="imageContainerLoading">
         <div class="item-title">Model Image</div>
         <div class="model-image-list" v-if="modelImageList.length">
@@ -62,12 +81,12 @@
         <div class="no-data" v-else>no pictures</div>
 
         <div class="item-title">Mask Image</div>
-        <div class="model-image-list" v-if="maskImage.length">
+        <div class="model-image-list" v-if="maskImageList.length">
           <div
             :class="['singl-model-image', item.active && 'single-image-active']"
-            v-for="item in maskImage"
+            v-for="item in maskImageList"
             :key="item.url"
-            @click="setSelectImage('mask', item, maskImage)"
+            @click="setSelectImage('mask', item, maskImageList)"
           >
             <img v-lazy="item.url" alt="" />
           </div>
@@ -76,8 +95,13 @@
       </div>
     </div>
     <div class="center-container">
-      <div class="common-title">Template Configuration</div>
-      <div class="graph-container">
+      <div class="common-title center-title">
+        <span> Template Configuration </span>
+        <span>
+          <el-button type="primary" @click="saveTemplate">Save</el-button>
+        </span>
+      </div>
+      <div class="graph-container" id="graph-container">
         <img
           style="z-index: 1"
           class="single-graph-image"
@@ -103,10 +127,11 @@
             }
           "
           class="mask-container"
+          id="mask-container"
         >
           <!-- 该图只为撑起来mask容器 -->
           <img
-            style="position: relative; width: 300px; z-index: 0"
+            style="position: relative; width: 300px; z-index: -1"
             :src="selectModelImage"
             alt=""
           />
@@ -181,74 +206,96 @@
     </div>
     <div class="sticker-part">
       <div class="common-title">Stickers</div>
-      <el-collapse>
-        <el-collapse-item
-          :name="item.id"
-          v-for="item in stickerList"
-          :key="item.id"
-        >
-          <template #title>
-            <img class="sticker-title-img" v-lazy="item.stickerUrl" alt="" />
-          </template>
-          <div class="sticker-list-container">
-            <span
-              class="single-sticker"
-              v-for="subItem in item.stickerChildlist"
-              :key="subItem.url"
-              @click="addStickerToGraph(subItem)"
-            >
-              <img v-lazy="subItem.url" alt="" />
-            </span>
-          </div>
-        </el-collapse-item>
-      </el-collapse>
+      <StickerCollapse @add="addStickerToGraph" />
     </div>
+    <a id="aBase64Url" download style="display: none">
+      <img src="" id="base64Url" />
+    </a>
+    <!-- 该canvas节点用来导出模板图片渲染用 -->
+    <canvas
+      id="myCanvas"
+      width="300"
+      height="588"
+      style="display: none"
+    ></canvas>
   </div>
 </template>
 
 <script setup name="template-detail-component">
-import { ref, onBeforeMount, watch } from "vue";
+import { ref, onBeforeMount, onMounted } from "vue";
 import { getPhoneColor, getModelList } from "@/api/model";
-import { getStickerList } from "@/api/sticker";
 import { getItemByClassId } from "@/api/dictionary";
-import { useRoute } from "vue-router";
+import { updateTemplate, getTemplateDetail } from "@/api/template";
+import { useRoute, useRouter } from "vue-router";
 import { uuid } from "@/utils";
+import { ElMessage } from "element-plus";
+import { exportAsImage } from "@/utils/domToImage";
 import DeleteIcon from "@/assets/images/drag_delete_icon.png";
 import PlusIcon from "@/assets/images/drag_plus_icon.svg";
 import ResizeIcon from "@/assets/images/drag_resize_icon.png";
 import RotateIcon from "@/assets/images/drag_rotate_icon.svg";
+import StickerCollapse from "../components/stickerCollapse.vue";
+
+const route = useRoute();
 onBeforeMount(() => {
   initModelList();
   initOneLevelOptions();
-  initStickerList();
-  if (testFlag) {
-    selectModel.value = "IPHONE14";
-    modelChange("IPHONE14");
+  const { templateId } = route.query;
+  if (templateId) {
+    initTemplateDetails(templateId);
   }
 });
 
-const testFlag = true;
+onMounted(() => {});
 
-const templateName = ref(null);
-
-const stickerLoading = ref(false);
-const stickerList = ref([]);
-const initStickerList = () => {
-  stickerLoading.value = true;
-  getStickerList()
-    .then((res) => {
-      if (res.code === 200) {
-        stickerList.value = res.data;
-      } else {
-        stickerList.value = [];
-      }
-    })
-    .finally(() => {
-      stickerLoading.value = false;
-    });
+const formData = ref({
+  templateName: null,
+  oneLevelCategory: null,
+  selectModel: null,
+});
+const formRules = ref({
+  templateName: [
+    {
+      required: true,
+      message: "Please enter the template name!",
+      trigger: ["blur", "change"],
+    },
+  ],
+  oneLevelCategory: [
+    {
+      required: true,
+      message: "Please select one level category!",
+      trigger: ["blur", "change"],
+    },
+  ],
+  selectModel: [
+    {
+      required: true,
+      message: "Please select model!",
+      trigger: ["blur", "change"],
+    },
+  ],
+});
+/**
+ * 初始化模板详情数据
+ */
+const initTemplateDetails = (templateId) => {
+  getTemplateDetail({ templateId }).then((res) => {
+    if (res.code === 200) {
+      const { templateData, phoneCode } = res.data;
+      dragStickerList.value = templateData.basedata;
+      formData.value.selectModel = phoneCode;
+      formData.value.templateName = res.data.templateName;
+      modelChange(phoneCode, templateData);
+    } else {
+      ElMessage.warning("获取模板数据失败！");
+    }
+  });
 };
 
-const selectModel = ref("");
+/**
+ * 选择机型
+ */
 const modelOptions = ref([]);
 const initModelList = () => {
   getModelList().then((res) => {
@@ -262,15 +309,18 @@ const initModelList = () => {
     }
   });
 };
-const modelChange = (model) => {
-  getModelImages(model);
+const modelChange = (model, selectImages) => {
+  getModelImages(model, selectImages);
 };
 
+/**
+ * 机型图片
+ */
 const imageContainerLoading = ref(false);
 const modelImageList = ref([]);
 const caseImageList = ref([]);
-const maskImage = ref([]);
-const getModelImages = (phoneCode) => {
+const maskImageList = ref([]);
+const getModelImages = (phoneCode, selectImages) => {
   imageContainerLoading.value = true;
   getPhoneColor({ phoneCode })
     .then((res) => {
@@ -293,7 +343,7 @@ const getModelImages = (phoneCode) => {
               ...{ active: false },
             };
           });
-        maskImage.value = res.data
+        maskImageList.value = res.data
           .filter((item) => item.type === "3")
           .map((item) => item.colorUrlList)[0]
           .map((item) => {
@@ -305,19 +355,32 @@ const getModelImages = (phoneCode) => {
       } else {
         modelImageList.value = [];
         caseImageList.value = [];
-        maskImage.value = [];
+        maskImageList.value = [];
       }
     })
     .finally(() => {
       imageContainerLoading.value = false;
-      if (testFlag) {
-        setSelectImage("model", modelImageList.value[0], modelImageList.value);
-        setSelectImage("case", caseImageList.value[0], caseImageList.value);
-        setSelectImage("mask", maskImage.value[0], maskImage.value);
+      if (selectImages) {
+        const { modelImage, caseImage, maskImage } = selectImages;
+        const modelItem = modelImageList.value.filter(
+          (item) => item.url === modelImage
+        )[0];
+        setSelectImage("model", modelItem, modelImageList.value);
+        const caseItem = caseImageList.value.filter(
+          (item) => item.url === caseImage
+        )[0];
+        setSelectImage("case", caseItem, caseImageList.value);
+        const maskItem = maskImageList.value.filter(
+          (item) => item.url === maskImage
+        )[0];
+        setSelectImage("mask", maskItem, maskImageList.value);
       }
     });
 };
 
+/**
+ * 设置图片
+ */
 const selectModelImage = ref(null);
 const selectCaseImage = ref(null);
 const selectMaskImage = ref(null);
@@ -339,8 +402,9 @@ const setSelectImage = (type, item, itemList) => {
   item.active = true;
 };
 
-const route = useRoute();
-const oneLevelCategory = ref(null);
+/**
+ * 选择模板分类
+ */
 const oneLevelOptions = ref([]);
 const initOneLevelOptions = () => {
   getItemByClassId({
@@ -360,25 +424,25 @@ const initOneLevelOptions = () => {
     .finally(() => {
       const { typeCode } = route.query;
       if (typeCode) {
-        oneLevelCategory.value = typeCode;
+        formData.value.oneLevelCategory = typeCode;
       }
     });
 };
 
 const dragStickerList = ref([
-  {
-    id: "xxx1",
-    url: "/diyadmin/download?fileId=a377ec418cae49bf80fbde0fdec415ff",
-    height: 100,
-    width: 100,
-    top: 200,
-    left: 50,
-    rotate: 0,
-    zIndex: 1001,
-    active: false,
-  },
+  // {
+  //   id: "xxx1",
+  //   url: "/diyadmin/download?fileId=a377ec418cae49bf80fbde0fdec415ff",
+  //   height: 100,
+  //   width: 100,
+  //   top: 200,
+  //   left: 50,
+  //   rotate: 0,
+  //   zIndex: 1001,
+  //   active: false,
+  // },
 ]);
-const addStickerToGraph = ({ url }) => {
+const addStickerToGraph = (url) => {
   dragStickerList.value.push({
     id: uuid(),
     url,
@@ -590,6 +654,50 @@ const eventEndHandler = () => {
   resizeEnd();
   dragEndHandler();
 };
+
+const router = useRouter();
+const saveLoading = ref(false);
+const templateFormIns = ref(null);
+const saveTemplate = async () => {
+  const validFlag = await templateFormIns.value.validate();
+  if (!validFlag) return;
+  saveLoading.value = true;
+  clearActiveState();
+  const templateUrl = await exportAsImage("mask-container", {
+    mask: selectMaskImage.value,
+    model: selectModelImage.value,
+    caseImage: selectCaseImage.value,
+  });
+  const params = {
+    phoneCode: formData.value.selectModel,
+    templateData: {
+      basedata: dragStickerList.value,
+      modelImage: selectModelImage.value,
+      caseImage: selectCaseImage.value,
+      maskImage: selectMaskImage.value,
+    },
+    typeCode: formData.value.oneLevelCategory,
+    description: "",
+    templateName: formData.value.templateName,
+    templateUrl,
+    templateId: route?.query?.templateId || "",
+  };
+  updateTemplate(params)
+    .then((res) => {
+      if (res.code === 200) {
+        ElMessage({
+          message: "模板保存成功！",
+          type: "success",
+        });
+        setTimeout(() => {
+          router.push("/template");
+        }, 2000);
+      }
+    })
+    .finally(() => {
+      saveLoading.value = false;
+    });
+};
 </script>
 
 <style lang="less" scoped>
@@ -671,8 +779,8 @@ const eventEndHandler = () => {
         user-select: none;
         position: absolute;
         cursor: pointer;
-        background-image: url("../../../assets/images/login_background2.jpg");
-        background-size: 100% 100%;
+        // background-image: url("../../../assets/images/login_background2.jpg");
+        // background-size: 100% 100%;
         box-sizing: border-box;
         border: 1px solid #00000000;
         .operation-icon {
@@ -731,29 +839,16 @@ const eventEndHandler = () => {
     font-weight: bold;
     color: #333;
   }
+  .center-title {
+    display: flex;
+    justify-content: space-between;
+  }
   .sticker-part {
     flex: 1;
     margin-left: 20px;
     box-sizing: border-box;
     height: 100%;
     overflow: auto;
-    .sticker-title-img {
-      height: 40px;
-      width: 40px;
-    }
-    .sticker-list-container {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-evenly;
-      .single-sticker {
-        width: 15%;
-        display: inline-block;
-        img {
-          width: 100%;
-        }
-      }
-    }
   }
 }
 </style>

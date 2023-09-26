@@ -17,7 +17,8 @@
                 </span>
               </div>
               <div class="image-container">
-                <img src="@/assets/images/template_demo.png" alt="" />
+                <!-- <img src="@/assets/images/template_demo.png" alt="" /> -->
+                <img v-lazy="buildImageUrl(item.templateUrl)" alt="" />
               </div>
               <div class="single-operation">
                 <el-button type="primary" @click="jumpToTemplateDetail(item)"
@@ -30,7 +31,7 @@
             </div>
           </el-col>
         </el-row>
-        <div class="no-data">
+        <div class="no-data" v-else>
           <span> There is currently no data available, </span>
           <span class="link-span" @click="jumpToTemplateDetail">
             go to add a template!
@@ -49,6 +50,7 @@ import { ref, watch } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { getTemplateList, deleteTemplate } from "@/api/template";
 import { useRouter } from "vue-router";
+import { buildImageUrl } from "@/utils/index.js";
 const emit = defineEmits();
 const props = defineProps({
   dataset: {
@@ -159,6 +161,11 @@ const handleClose = (flag) => {
         color: #333;
         margin-bottom: 5px;
         text-align: center;
+      }
+      .image-container {
+        img {
+          width: 100%;
+        }
       }
       .single-operation {
         display: none;
