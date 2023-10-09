@@ -73,7 +73,7 @@
               /></el-icon>
             </el-upload>
             <el-icon
-              @click="iconDelete(item)"
+              @click="iconDelete2(item)"
               v-show="item.url"
               class="el-icon-delete"
               ><Delete
@@ -234,6 +234,9 @@ const addNewCase = () => {
 const iconDelete = (item) => {
   item.url = "";
 };
+const iconDelete2 = (item) => {
+  item.exampleUrl = "";
+};
 const deleteCurrentItem = (index) => {
   itemList.value.splice(index, 1);
 };
@@ -315,7 +318,9 @@ const handleAvatarSuccess2 = (response, uploadFile, index) => {
       border-color: #409eff;
     }
     .avatar-uploader-icon {
-      color: #8c939d;
+      color: #000;
+      font-size: 14px;
+      font-weight: bold;
       width: 110px;
       height: 110px;
       text-align: center;
