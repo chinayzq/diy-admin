@@ -50,6 +50,7 @@ function uploadAndGetTemplateUrl() {
     //组装formdata
     var fd = new FormData();
     fd.append('file', blob); //fileData为自定义
+    fd.append('isCompress', true); //fileData为自定义
     fd.append('fileName', 'template111'); //fileName为自定义，名字随机生成或者写死，看需求
     //ajax上传，ajax的形式随意，JQ的写法也没有问题
     //需要注意的是服务端需要设定，允许跨域请求。数据接收的方式和<input type="file"/> 上传的文件没有区别
