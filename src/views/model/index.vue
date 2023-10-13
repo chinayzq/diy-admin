@@ -2,14 +2,14 @@
   <div class="model-page-component">
     <div class="search-line">
       <div class="single-item">
-        <span class="item-label">Phone Model：</span>
+        <span class="item-label">机型：</span>
         <span>
           <el-select
             @change="dataFilterHandler"
             v-model="search.model"
             filterable
             clearable
-            placeholder="Choose a phone model"
+            placeholder="请选择机型"
           >
             <el-option
               v-for="item in modelOptions"
@@ -21,7 +21,7 @@
         </span>
       </div>
       <div class="single-item">
-        <el-button type="primary">Search</el-button>
+        <el-button type="primary">查询</el-button>
       </div>
     </div>
     <div class="table-container">
@@ -34,26 +34,26 @@
         style="width: 100%"
       >
         <el-table-column type="index" width="50" />
-        <el-table-column prop="brandName" label="Brand" />
-        <el-table-column prop="phoneName" label="Model" />
-        <el-table-column prop="operation" label="Operation">
+        <el-table-column prop="brandName" label="品牌" />
+        <el-table-column prop="phoneName" label="机型" />
+        <el-table-column prop="operation" label="操作">
           <template #default="scope">
             <el-button
               type="primary"
               text
               @click="editHandler(scope.row, 'phoneModel')"
             >
-              Model color
+              机型颜色
             </el-button>
             <el-button type="primary" text @click="caseEditHandler(scope.row)">
-              Case Color
+              手机壳颜色
             </el-button>
             <el-button
               type="primary"
               text
               @click="editHandler(scope.row, 'MaskImage')"
             >
-              Mask Image
+              蒙板配置
             </el-button>
           </template>
         </el-table-column>
@@ -108,7 +108,7 @@ const dataFilterHandler = () => {
 
 const caseDialogDatas = ref({
   show: false,
-  title: "Case Color",
+  title: "手机壳颜色",
   phoneCode: "",
   type: 2,
 });
@@ -123,15 +123,15 @@ const caseDialogCloseHandler = () => {
 
 const modelDialogDatas = ref({
   show: false,
-  title: "Model color",
+  title: "机型颜色",
   phoneCode: "",
   type: "",
 });
 const editHandler = ({ phoneCode }, type) => {
   const titleMap = {
-    phoneModel: "Model color",
-    phoneCase: "Case Color",
-    MaskImage: "Mask Image",
+    phoneModel: "机型颜色",
+    phoneCase: "手机壳颜色",
+    MaskImage: "蒙板配置",
   };
   //   phoneModel: "机型颜色" - 1,
   //   phoneCase: "手机壳颜色" - 2,

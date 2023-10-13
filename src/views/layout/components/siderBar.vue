@@ -35,22 +35,22 @@ watch(
 );
 const menuList = ref([
   {
-    label: "Model",
+    label: "机型",
     router: "/model",
     icon: "Menu",
   },
   {
-    label: "Sticker",
+    label: "贴纸",
     router: "/sticker",
     icon: "Discount",
   },
   {
-    label: "Template",
+    label: "模板",
     router: "/template",
     icon: "Grid",
   },
   {
-    label: "Dictionary",
+    label: "数据字典",
     router: "/dictionary",
     icon: "Document",
   },

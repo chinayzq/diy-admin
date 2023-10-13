@@ -22,24 +22,24 @@
               </div>
               <div class="single-operation">
                 <el-button type="primary" @click="jumpToTemplateDetail(item)"
-                  >Edit</el-button
+                  >编辑</el-button
                 >
                 <el-button type="danger" @click="deleteHandler(item)"
-                  >Delete</el-button
+                  >删除</el-button
                 >
               </div>
             </div>
           </el-col>
         </el-row>
         <div class="no-data" v-else>
-          <span> There is currently no data available, </span>
+          <span> 该分类下暂无模板, </span>
           <span class="link-span" @click="jumpToTemplateDetail">
-            go to add a template!
+            去添加模板!
           </span>
         </div>
       </div>
       <div class="button-container">
-        <el-button type="primary" @click="handleClose">Close</el-button>
+        <el-button type="primary" @click="handleClose">关闭</el-button>
       </div>
     </el-dialog>
   </div>
@@ -74,24 +74,6 @@ watch(
 
 const listLoading = ref(false);
 const listDatas = ref([]);
-const demoList = [
-  {
-    templateName: "xxx1",
-    templateId: "1",
-  },
-  {
-    templateName: "xxx2",
-  },
-  {
-    templateName: "xxx3",
-  },
-  {
-    templateName: "xxx4",
-  },
-  {
-    templateName: "xxx5",
-  },
-];
 const getTemplate = () => {
   listLoading.value = true;
   getTemplateList({
@@ -101,8 +83,6 @@ const getTemplate = () => {
       console.log(res);
       if (res.code === 200) {
         listDatas.value = res.data;
-      } else {
-        listDatas.value = demoList;
       }
     })
     .finally(() => {
@@ -111,16 +91,16 @@ const getTemplate = () => {
 };
 
 const deleteHandler = ({ templateId }) => {
-  ElMessageBox.confirm("Are you sure to delete this data?", "warning", {
-    confirmButtonText: "Confirm",
-    cancelButtonText: "Cancel",
+  ElMessageBox.confirm("确定删除该模板吗?", "warning", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
     type: "warning",
   })
     .then(() => {
       deleteTemplate({ templateId }).then((res) => {
         if (res.code === 200) {
           ElMessage({
-            message: "delete successful！",
+            message: "删除成功！",
             type: "success",
           });
           getTemplate();

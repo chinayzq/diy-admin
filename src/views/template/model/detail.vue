@@ -6,7 +6,7 @@
     @click="clearActiveState"
   >
     <div class="basic-image-part">
-      <div class="common-title">Base Map Selection</div>
+      <div class="common-title">基础信息</div>
       <el-form
         label-position="top"
         label-width="120px"
@@ -18,7 +18,7 @@
           <el-input
             v-model="formData.templateName"
             class="model-selector"
-            placeholder="Please enter a template name"
+            placeholder="请输入模板名称"
           ></el-input>
         </el-form-item>
         <el-form-item prop="oneLevelCategory">
@@ -26,7 +26,7 @@
             class="model-selector"
             v-model="formData.oneLevelCategory"
             filterable
-            placeholder="Slect One Level Category"
+            placeholder="选择模板分类"
           >
             <el-option
               v-for="item in oneLevelOptions"
@@ -42,7 +42,7 @@
             v-model="formData.selectModel"
             filterable
             @change="modelChange"
-            placeholder="Select Model"
+            placeholder="选择机型"
           >
             <el-option
               v-for="item in modelOptions"
@@ -54,7 +54,7 @@
         </el-form-item>
       </el-form>
       <div v-loading="imageContainerLoading">
-        <div class="item-title">Model Image</div>
+        <div class="item-title">机型图片</div>
         <div class="model-image-list" v-if="modelImageList.length">
           <div
             :class="['singl-model-image', item.active && 'single-image-active']"
@@ -65,9 +65,9 @@
             <img v-lazy="item.url" alt="" />
           </div>
         </div>
-        <div class="no-data" v-else>no pictures</div>
+        <div class="no-data" v-else>暂无数据</div>
 
-        <div class="item-title">Case Image</div>
+        <div class="item-title">手机壳图片</div>
         <div class="model-image-list" v-if="caseImageList.length">
           <div
             :class="['singl-model-image', item.active && 'single-image-active']"
@@ -78,9 +78,9 @@
             <img v-lazy="item.url" alt="" />
           </div>
         </div>
-        <div class="no-data" v-else>no pictures</div>
+        <div class="no-data" v-else>暂无数据</div>
 
-        <div class="item-title">Mask Image</div>
+        <div class="item-title">模板图片</div>
         <div class="model-image-list" v-if="maskImageList.length">
           <div
             :class="['singl-model-image', item.active && 'single-image-active']"
@@ -91,14 +91,14 @@
             <img v-lazy="item.url" alt="" />
           </div>
         </div>
-        <div class="no-data" v-else>no pictures</div>
+        <div class="no-data" v-else>暂无数据</div>
       </div>
     </div>
     <div class="center-container">
       <div class="common-title center-title">
-        <span> Template Configuration </span>
+        <span> 模板配置 </span>
         <span>
-          <el-button type="primary" @click="saveTemplate">Save</el-button>
+          <el-button type="primary" @click="saveTemplate">保存</el-button>
         </span>
       </div>
       <div class="graph-container" id="graph-container">
@@ -205,7 +205,7 @@
       </div>
     </div>
     <div class="sticker-part">
-      <div class="common-title">Stickers</div>
+      <div class="common-title">贴纸</div>
       <StickerCollapse @add="addStickerToGraph" />
     </div>
     <a id="aBase64Url" download style="display: none">
@@ -257,21 +257,21 @@ const formRules = ref({
   templateName: [
     {
       required: true,
-      message: "Please enter the template name!",
+      message: "请输入模板名称!",
       trigger: ["blur", "change"],
     },
   ],
   oneLevelCategory: [
     {
       required: true,
-      message: "Please select one level category!",
+      message: "请选择所属模板分类!",
       trigger: ["blur", "change"],
     },
   ],
   selectModel: [
     {
       required: true,
-      message: "Please select model!",
+      message: "请选择机型!",
       trigger: ["blur", "change"],
     },
   ],

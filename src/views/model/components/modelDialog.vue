@@ -15,8 +15,8 @@
         <el-icon><Plus /></el-icon>
       </el-upload>
       <div class="button-container">
-        <el-button @click="handleClose">Cancel</el-button>
-        <el-button type="primary" @click="saveHandler">Save</el-button>
+        <el-button @click="handleClose">取消</el-button>
+        <el-button type="primary" @click="saveHandler">保存</el-button>
       </div>
     </el-dialog>
     <el-dialog v-model="previewDialog.show">
@@ -86,7 +86,7 @@ const saveHandler = () => {
   createPhoneColor(params).then((res) => {
     if (res.code === 200) {
       ElMessage({
-        message: "Successfully saved!",
+        message: "保存成功!",
         type: "success",
       });
       handleClose(true);

@@ -1,7 +1,7 @@
 <template>
   <div class="template-list-page">
     <div class="filter-line">
-      <el-button type="primary" @click="addNewTemplate">New Template</el-button>
+      <el-button type="primary" @click="addNewTemplate">新模板</el-button>
     </div>
     <div class="table-container">
       <el-table
@@ -13,15 +13,15 @@
         style="width: 100%"
       >
         <el-table-column type="index" width="50" />
-        <el-table-column prop="itemCode" label="Template Category Name" />
-        <el-table-column prop="extend1" label="Description" />
-        <el-table-column prop="operation" label="Operation">
+        <el-table-column prop="itemCode" label="模板分类名称" />
+        <el-table-column prop="extend1" label="描述" />
+        <el-table-column prop="operation" label="操作">
           <template #default="scope">
             <el-button type="primary" text @click="addHandler(scope.row)">
-              Add Template
+              添加模板
             </el-button>
             <el-button type="primary" text @click="editHandler(scope.row)">
-              Edit Template List
+              模板列表
             </el-button>
           </template>
         </el-table-column>
@@ -64,7 +64,7 @@ const getTableList = () => {
 
 const templateDialogDatas = ref({
   show: false,
-  title: "Template List",
+  title: "模板列表",
   typeCode: null,
 });
 const editHandler = ({ itemCode }) => {

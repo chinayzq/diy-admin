@@ -15,7 +15,7 @@
       >
         <el-row :gutter="48">
           <el-col :span="12">
-            <el-form-item label="Category Code" prop="classCode">
+            <el-form-item label="分类编码" prop="classCode">
               <el-input
                 :disabled="props.dataset.datas.classId"
                 v-model="formData.classCode"
@@ -23,12 +23,12 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="Category Name" prop="className">
+            <el-form-item label="分类名称" prop="className">
               <el-input v-model="formData.className" />
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="Description" prop="description">
+            <el-form-item label="描述" prop="description">
               <el-input
                 :rows="2"
                 type="textarea"
@@ -38,46 +38,46 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-form-item label="Subitem List">
+          <el-form-item label="子项列表">
             <el-button
               style="margin-bottom: 10px"
               type="primary"
               @click="addNewItem"
-              >New Subitem</el-button
+              >添加子项</el-button
             >
             <el-table
               v-loading="listLoading"
               :data="formData.itemList"
               style="width: 100%"
             >
-              <el-table-column prop="itemCode" label="Subitem Code">
+              <el-table-column prop="itemCode" label="子项编码">
                 <template #default="scope">
                   <el-input v-model="scope.row.itemCode"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="itemName" label="Subitem Name">
+              <el-table-column prop="itemName" label="子项名称">
                 <template #default="scope">
                   <el-input v-model="scope.row.itemName"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="extend1" label="Extension 1">
+              <el-table-column prop="extend1" label="扩展1">
                 <template #default="scope">
                   <el-input v-model="scope.row.extend1"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="extend2" label="Extension 2">
+              <el-table-column prop="extend2" label="扩展2">
                 <template #default="scope">
                   <el-input v-model="scope.row.extend2"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="operation" label="Operation">
+              <el-table-column prop="operation" label="操作">
                 <template #default="scope">
                   <el-button
                     type="danger"
                     text
                     @click="rowClickHandler('delete', scope.row, scope.$index)"
                   >
-                    Delete
+                    删除
                   </el-button>
                 </template>
               </el-table-column>
@@ -87,13 +87,13 @@
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="handleClose">Cancel</el-button>
+          <el-button @click="handleClose">取消</el-button>
           <el-button
             type="primary"
             @click="submitHandler"
             v-loading="submitLoading"
           >
-            Save
+            保存
           </el-button>
         </span>
       </template>
@@ -151,14 +151,14 @@ const formRules = ref({
   classCode: [
     {
       required: true,
-      message: "Please enter the category code!",
+      message: "请输入分类编码!",
       trigger: "blur",
     },
   ],
   className: [
     {
       required: true,
-      message: "Please enter the category name!",
+      message: "请输入分类名称!",
       trigger: "blur",
     },
   ],
@@ -233,7 +233,7 @@ const addNewHandler = async () => {
     updateItemListRequest(result.data);
   } else {
     ElMessage({
-      message: "Successfully saved!",
+      message: "保存成功!",
       type: "success",
     });
     submitLoading.value = false;
@@ -250,7 +250,7 @@ const updateItemListRequest = (classId) => {
       console.log("xxx");
       if (res.code === 200) {
         ElMessage({
-          message: "Update successful!",
+          message: "更新成功!",
           type: "success",
         });
         handleClose(true);

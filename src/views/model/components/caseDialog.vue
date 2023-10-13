@@ -6,7 +6,7 @@
       width="1000"
       :before-close="handleClose"
     >
-      <el-button type="primary" @click="addNewCase">new Case</el-button>
+      <el-button type="primary" @click="addNewCase">新增手机壳</el-button>
       <div class="single-item" v-for="(item, index) in itemList" :key="index">
         <div class="left-part">
           <div class="single-upload" v-loading="item.uploadLoading1">
@@ -83,42 +83,42 @@
         <div class="right-part">
           <el-row :gutter="48">
             <el-col :span="12" class="single-item-line">
-              <span class="item-label"> Color Name： </span>
+              <span class="item-label"> 手机壳名称： </span>
               <el-input
                 v-model="item.colorName"
                 placeholder="color name"
               ></el-input>
             </el-col>
             <el-col :span="12" class="single-item-line">
-              <span class="item-label"> Current Price： </span>
+              <span class="item-label"> 现格： </span>
               <el-input
                 v-model="item.curPrice"
                 placeholder="current price"
               ></el-input>
             </el-col>
             <el-col :span="12" class="single-item-line">
-              <span class="item-label"> Original Price： </span>
+              <span class="item-label"> 原价： </span>
               <el-input
                 v-model="item.oriPrice"
                 placeholder="original price"
               ></el-input>
             </el-col>
             <el-col :span="12" class="single-item-line">
-              <span class="item-label"> Description： </span>
+              <span class="item-label"> 描述： </span>
               <el-input
                 v-model="item.description"
                 placeholder="description"
               ></el-input>
             </el-col>
             <el-col :span="12" class="single-item-line">
-              <span class="item-label"> Size Description： </span>
+              <span class="item-label"> 尺寸描述： </span>
               <el-input
                 v-model="item.extend1"
                 placeholder="size description"
               ></el-input>
             </el-col>
             <el-col :span="12" class="single-item-line">
-              <span class="item-label"> Camera Description： </span>
+              <span class="item-label"> 摄像头描述： </span>
               <el-input
                 v-model="item.extend2"
                 placeholder="camera description"
@@ -134,15 +134,15 @@
               style="display: flex; justify-content: end"
             >
               <el-button type="danger" @click="deleteCurrentItem(index)">
-                Delete Item
+                删除
               </el-button>
             </el-col>
           </el-row>
         </div>
       </div>
       <div class="button-container">
-        <el-button @click="handleClose">Cancel</el-button>
-        <el-button type="primary" @click="saveHandler">Save</el-button>
+        <el-button @click="handleClose">取消</el-button>
+        <el-button type="primary" @click="saveHandler">保存</el-button>
       </div>
     </el-dialog>
     <el-dialog v-model="previewDialog.show">
@@ -208,7 +208,7 @@ const saveHandler = () => {
   createPhoneColor(params).then((res) => {
     if (res.code === 200) {
       ElMessage({
-        message: "Successfully saved!",
+        message: "保存成功!",
         type: "success",
       });
       handleClose(true);
