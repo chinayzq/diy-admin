@@ -1,6 +1,6 @@
 <template>
   <div class="stiker-collapse-component" v-loading="stickerLoading">
-    <el-collapse>
+    <el-collapse accordion @change="collapseChange">
       <el-collapse-item
         :name="item.id"
         v-for="item in stickerList"
@@ -26,7 +26,7 @@
 
 <script setup>
 import { ref, onBeforeMount } from "vue";
-import { getStickerList } from "@/api/sticker";
+import { getStickerList, getStickerDetails } from "@/api/sticker";
 const emit = defineEmits();
 const addStickerToGraph = ({ url }) => {
   emit("add", url);
@@ -39,10 +39,13 @@ const stickerLoading = ref(false);
 const stickerList = ref([]);
 const initStickerList = () => {
   stickerLoading.value = true;
-  getStickerList()
+  getStickerList({
+    offset: 0,
+    pageSize: 500,
+  })
     .then((res) => {
       if (res.code === 200) {
-        stickerList.value = res.data;
+        stickerList.value = res.data.sort((a, b) => a.id - b.id);
       } else {
         stickerList.value = [];
       }
@@ -50,6 +53,19 @@ const initStickerList = () => {
     .finally(() => {
       stickerLoading.value = false;
     });
+};
+const collapseChange = (index) => {
+  getStickerDetails({
+    id: index,
+  })
+    .then((res) => {
+      stickerList.value.forEach((item) => {
+        if (item.id === index) {
+          item.stickerChildlist = res.data.stickerChildlist;
+        }
+      });
+    })
+    .finally(() => {});
 };
 </script>
 
