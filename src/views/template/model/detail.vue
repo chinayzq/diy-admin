@@ -659,10 +659,13 @@ const router = useRouter();
 const saveLoading = ref(false);
 const templateFormIns = ref(null);
 const saveTemplate = async () => {
+  // form必填校验
   const validFlag = await templateFormIns.value.validate();
   if (!validFlag) return;
   saveLoading.value = true;
+  // 清除画布active
   clearActiveState();
+  // 将画布保存为图片
   const templateUrl = await exportAsImage("mask-container", {
     mask: selectMaskImage.value,
     model: selectModelImage.value,
