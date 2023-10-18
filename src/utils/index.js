@@ -100,6 +100,26 @@ export function initGlableFilters(app) {
     },
   };
 }
+export const dateFormat = (dat) => {
+  if (!dat) return '--';
+  dat = new Date(dat);
+  //获取年月日，时间
+  const year = dat.getFullYear();
+  const mon =
+    dat.getMonth() + 1 < 10
+      ? '0' + (dat.getMonth() + 1)
+      : dat.getMonth() + 1;
+  const data = dat.getDate() < 10 ? '0' + dat.getDate() : dat.getDate();
+  const hour = dat.getHours() < 10 ? '0' + dat.getHours() : dat.getHours();
+  const min =
+    dat.getMinutes() < 10 ? '0' + dat.getMinutes() : dat.getMinutes();
+  const seon =
+    dat.getSeconds() < 10 ? '0' + dat.getSeconds() : dat.getSeconds();
+  return (
+    year + '-' + mon + '-' + data + ' ' + hour + ':' + min + ':' + seon
+  );
+}
+
 export function jumpLinkHandler(url) {
   let currentEnv = import.meta.env.MODE;
   const envMap = {

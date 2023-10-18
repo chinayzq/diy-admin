@@ -21,7 +21,7 @@
         </span>
       </div>
       <div class="single-item">
-        <el-button type="primary">查询</el-button>
+        <el-button type="primary" @click="initListData">查询</el-button>
       </div>
     </div>
     <div class="table-container">

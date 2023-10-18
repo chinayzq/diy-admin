@@ -50,6 +50,11 @@ const menuList = ref([
     icon: "Grid",
   },
   {
+    label: "优惠券",
+    router: "/coupon",
+    icon: "Ticket",
+  },
+  {
     label: "数据字典",
     router: "/dictionary",
     icon: "Document",

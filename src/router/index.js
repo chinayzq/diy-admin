@@ -42,6 +42,12 @@ const router = createRouter({
           component: () => import('@/views/dictionary/index.vue'),
           meta: { title: '数据字典' },
         },
+        {
+          path: '/coupon',
+          name: 'coupon',
+          component: () => import('@/views/coupon/index.vue'),
+          meta: { title: '优惠券' },
+        },
       ],
     },
     {

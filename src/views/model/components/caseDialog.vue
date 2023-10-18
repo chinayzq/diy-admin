@@ -183,6 +183,8 @@ const initAndDisplayDatas = (datas) => {
   getPhoneColor({ type, phoneCode }).then((res) => {
     if (res.code === 200) {
       itemList.value = res.data[0].colorUrlList;
+    } else {
+      itemList.value = [];
     }
   });
 };
