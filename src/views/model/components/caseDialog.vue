@@ -90,6 +90,13 @@
               ></el-input>
             </el-col>
             <el-col :span="12" class="single-item-line">
+              <span class="item-label"> 颜色： </span>
+              <el-input
+                v-model="item.description"
+                placeholder="description"
+              ></el-input>
+            </el-col>
+            <el-col :span="12" class="single-item-line">
               <span class="item-label"> 现格： </span>
               <el-input
                 v-model="item.curPrice"
@@ -101,13 +108,6 @@
               <el-input
                 v-model="item.oriPrice"
                 placeholder="original price"
-              ></el-input>
-            </el-col>
-            <el-col :span="12" class="single-item-line">
-              <span class="item-label"> 描述： </span>
-              <el-input
-                v-model="item.description"
-                placeholder="description"
               ></el-input>
             </el-col>
             <el-col :span="12" class="single-item-line">

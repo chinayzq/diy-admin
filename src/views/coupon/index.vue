@@ -52,6 +52,9 @@
             <el-button type="primary" text @click="editHandler(scope.row)">
               编辑
             </el-button>
+            <el-button type="danger" text @click="deleteHandler(scope.row)">
+              删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -73,9 +76,10 @@
 </template>
 
 <script setup>
-import { getCouponList } from "@/api/coupon";
+import { getCouponList, deleteCoupon } from "@/api/coupon";
 import { onBeforeMount, ref } from "vue";
 import { dateFormat } from "@/utils";
+import { ElMessageBox, ElMessage } from "element-plus";
 import CouponDialog from "./components/couponDialog.vue";
 
 onBeforeMount(() => {
@@ -135,6 +139,28 @@ const editHandler = (item) => {
   couponDialog.value.show = true;
   couponDialog.value.title = "编辑优惠券";
   couponDialog.value.datas = item;
+};
+
+const deleteHandler = (item) => {
+  ElMessageBox.confirm("确定删除该条数据吗?", "警告", {
+    confirmButtonText: "确认",
+    cancelButtonText: "取消",
+    type: "warning",
+  })
+    .then(() => {
+      deleteCoupon({ couponId: item.couponCode }).then((res) => {
+        if (res.code === 200) {
+          ElMessage({
+            message: "删除成功！",
+            type: "success",
+          });
+          initListData();
+        }
+      });
+    })
+    .catch(() => {
+      console.log("取消删除！");
+    });
 };
 </script>
 
