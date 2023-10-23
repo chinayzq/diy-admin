@@ -60,7 +60,7 @@ const getTableDatas = () => {
   pageLoading.value = true;
   getStickerList()
     .then((res) => {
-      tableData.value = res.data;
+      tableData.value = res.data.list;
     })
     .finally(() => {
       pageLoading.value = false;

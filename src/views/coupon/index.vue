@@ -103,8 +103,8 @@ const initListData = () => {
   getCouponList(search.value)
     .then((res) => {
       if (res.code === 200) {
-        tableData.value = res.data;
-        pageVO.total = res.total || 10;
+        tableData.value = res.data.list;
+        pageVO.total = res.data.totalCount;
       }
     })
     .finally(() => {

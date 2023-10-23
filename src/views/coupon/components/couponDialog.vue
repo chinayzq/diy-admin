@@ -152,6 +152,7 @@ const submitHandler = () => {
   });
 };
 const submitLoading = ref(false);
+const emit = defineEmits();
 const editHandler = () => {
   let params = formData.value;
   if (props?.dataset?.datas?.couponCode) {
@@ -173,7 +174,6 @@ const editHandler = () => {
     });
 };
 
-const emit = defineEmits();
 const handleClose = () => {
   resetForm();
   emit("close");
