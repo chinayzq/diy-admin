@@ -63,9 +63,14 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="贴纸列表" prop="stickerChildlist">
+            <el-form-item
+              label="贴纸列表"
+              v-loading="childListLoading"
+              prop="stickerChildlist"
+            >
               <div class="sticker-list-container">
                 <el-upload
+                  multiple
                   v-model:file-list="formData.stickerChildlist"
                   :action="beseUploadUrl"
                   list-type="picture-card"
@@ -99,7 +104,7 @@
 </template>
 
 <script setup>
-import { createPhoneSticker } from "@/api/sticker";
+import { createPhoneSticker, getStickerDetails } from "@/api/sticker";
 import { ref, watch } from "vue";
 import { ElMessage } from "element-plus";
 import { buildImageUrl } from "@/utils/index.js";
@@ -147,6 +152,8 @@ watch(
   },
   { deep: true }
 );
+
+const childListLoading = ref(false);
 const initAndDisplayDatas = (datas) => {
   if (!datas.datas.id) return;
   const { stickerName, stickerUrl, id, description, stickerChildlist } =
@@ -158,6 +165,16 @@ const initAndDisplayDatas = (datas) => {
     description,
     stickerChildlist,
   };
+  childListLoading.value = true;
+  getStickerDetails({
+    id: datas.datas.id,
+  })
+    .then((res) => {
+      formData.value.stickerChildlist = res.data.stickerChildlist;
+    })
+    .finally(() => {
+      childListLoading.value = false;
+    });
 };
 const iconDelete = () => {
   formData.value.stickerUrl = "";

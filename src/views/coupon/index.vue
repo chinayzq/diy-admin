@@ -5,9 +5,22 @@
         <span class="item-label">优惠卷编码：</span>
         <span>
           <el-input
+            style="width: 180px"
             clearable
             v-model="search.couponCode"
             placeholder="请输入优惠卷编码"
+          >
+          </el-input>
+        </span>
+      </div>
+      <div class="single-item">
+        <span class="item-label">描述：</span>
+        <span>
+          <el-input
+            style="width: 180px"
+            clearable
+            v-model="search.description"
+            placeholder="请输入优惠描述"
           >
           </el-input>
         </span>
@@ -88,6 +101,7 @@ onBeforeMount(() => {
 
 const search = ref({
   couponCode: null,
+  description: null,
   offset: 0,
   pageSize: 10,
 });

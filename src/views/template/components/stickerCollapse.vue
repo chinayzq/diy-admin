@@ -45,7 +45,7 @@ const initStickerList = () => {
   })
     .then((res) => {
       if (res.code === 200) {
-        stickerList.value = res.data.sort((a, b) => a.id - b.id);
+        stickerList.value = res.data.list.sort((a, b) => a.id - b.id);
       } else {
         stickerList.value = [];
       }
