@@ -55,12 +55,16 @@
             >
               蒙板配置
             </el-button>
+            <el-button type="primary" text @click="printSetHandler(scope.row)">
+              打印尺寸设置
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <ModelDialog :dataset="modelDialogDatas" @close="dialogCloseHandler" />
     <CaseDialog :dataset="caseDialogDatas" @close="caseDialogCloseHandler" />
+    <PrintDialog :dataset="printSetDialog" @close="printDialogClose" />
   </div>
 </template>
 
@@ -69,6 +73,21 @@ import { onMounted, ref } from "vue";
 import { getModelList } from "@/api/model.js";
 import ModelDialog from "./components/modelDialog.vue";
 import CaseDialog from "./components/caseDialog.vue";
+import PrintDialog from "./components/printDialog.vue";
+
+const printSetDialog = ref({
+  show: false,
+  title: "打印尺寸设置",
+  datas: {},
+});
+const printSetHandler = (item) => {
+  printSetDialog.value.show = true;
+  printSetDialog.value.datas = item;
+};
+const printDialogClose = () => {
+  printSetDialog.value.show = false;
+};
+
 const tableData = ref([]);
 const pageLoading = ref(false);
 const modelOptions = ref([]);
