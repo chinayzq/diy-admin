@@ -7,6 +7,7 @@
       :before-close="handleClose"
     >
       <el-upload
+        multiple
         v-model:file-list="fileList"
         :action="beseUploadUrl"
         list-type="picture-card"

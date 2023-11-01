@@ -36,7 +36,7 @@
         <el-table-column type="index" width="50" />
         <el-table-column prop="brandName" label="品牌" />
         <el-table-column prop="phoneName" label="机型" />
-        <el-table-column prop="operation" label="操作">
+        <el-table-column prop="operation" label="操作" width="500">
           <template #default="scope">
             <el-button
               type="primary"
