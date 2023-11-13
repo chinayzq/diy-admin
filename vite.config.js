@@ -9,7 +9,7 @@ const baseUrl = {
   development: './',
   sit: './',
   beta: './',
-  prod: '/admin/',
+  prod: './',
 };
 const getBaseByMode = (mode) => {
   console.log(
