@@ -35,6 +35,16 @@ watch(
 );
 const menuList = ref([
   {
+    label: "用户",
+    router: "/user",
+    icon: "User",
+  },
+  {
+    label: "订单管理",
+    router: "/order",
+    icon: "Goods",
+  },
+  {
     label: "机型",
     router: "/model",
     icon: "Menu",

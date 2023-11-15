@@ -5,9 +5,31 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/model',
+      redirect: '/user',
       component: Layout,
       children: [
+        {
+          path: '/user',
+          name: 'user',
+          component: () => import('@/views/user/index.vue'),
+          meta: { title: '用户' },
+        },
+        {
+          path: '/order',
+          name: 'order',
+          component: () => import('@/views/order/index.vue'),
+          meta: { title: '订单管理' },
+        },
+        {
+          path: '/user/detail',
+          name: 'userDetail',
+          component: () => import('@/views/user/model/detail.vue'),
+          meta: {
+            title: '用户详情',
+            detail: true,
+            parrentPath: '/user',
+          },
+        },
         {
           path: '/model',
           name: 'model',
