@@ -15,12 +15,6 @@ const router = createRouter({
           meta: { title: '用户' },
         },
         {
-          path: '/order',
-          name: 'order',
-          component: () => import('@/views/order/index.vue'),
-          meta: { title: '订单管理' },
-        },
-        {
           path: '/user/detail',
           name: 'userDetail',
           component: () => import('@/views/user/model/detail.vue'),
@@ -28,6 +22,22 @@ const router = createRouter({
             title: '用户详情',
             detail: true,
             parrentPath: '/user',
+          },
+        },
+        {
+          path: '/order',
+          name: 'order',
+          component: () => import('@/views/order/index.vue'),
+          meta: { title: '订单管理' },
+        },
+        {
+          path: '/order/detail',
+          name: 'orderDetail',
+          component: () => import('@/views/order/model/detail.vue'),
+          meta: {
+            title: '订单详情',
+            detail: true,
+            parrentPath: '/order',
           },
         },
         {

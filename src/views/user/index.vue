@@ -1,5 +1,5 @@
 <template>
-  <div class="coupon-list-component">
+  <div class="user-list-component">
     <div class="search-line">
       <div class="single-item">
         <span class="item-label">用户名：</span>
@@ -116,24 +116,6 @@ const handleCurrentChange = (page) => {
   initListData();
 };
 
-const couponDialog = ref({
-  show: false,
-  title: "新增优惠券",
-  datas: {},
-});
-const newCoupon = () => {
-  couponDialog.value.show = true;
-  couponDialog.value.title = "新增优惠券";
-  couponDialog.value.datas = {};
-};
-const dialogCloseHandler = (flag) => {
-  couponDialog.value.datas = {};
-  couponDialog.value.show = false;
-  if (flag) {
-    initListData();
-  }
-};
-
 const router = useRouter();
 const editHandler = (item) => {
   router.push({
@@ -168,7 +150,7 @@ const deleteHandler = (item) => {
 </script>
 
 <style lang="less" scoped>
-.coupon-list-component {
+.user-list-component {
   .search-line {
     display: flex;
     align-items: center;
