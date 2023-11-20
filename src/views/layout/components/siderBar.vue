@@ -65,9 +65,14 @@ const menuList = ref([
     icon: "Ticket",
   },
   {
+    label: "页面配置",
+    router: "/pageConfig",
+    icon: "Document",
+  },
+  {
     label: "数据字典",
     router: "/dictionary",
-    icon: "Document",
+    icon: "List",
   },
 ]);
 </script>

@@ -75,6 +75,12 @@ const router = createRouter({
           meta: { title: '数据字典' },
         },
         {
+          path: '/pageConfig',
+          name: 'pageConfig',
+          component: () => import('@/views/pageConfig/index.vue'),
+          meta: { title: '页面配置' },
+        },
+        {
           path: '/coupon',
           name: 'coupon',
           component: () => import('@/views/coupon/index.vue'),

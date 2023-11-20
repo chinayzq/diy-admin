@@ -55,7 +55,7 @@ export default ({ mode }) =>
       hmr: true,
       proxy: {
         '/diyadmin': {
-          target: 'http://43.159.137.119:8083/',
+          target: 'http://43.159.137.119/',
           changeOrigin: true,
           // rewrite: (path) => path.replace(/^\/saascloud/, 'saascloud'),
         },
