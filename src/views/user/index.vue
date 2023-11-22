@@ -2,13 +2,25 @@
   <div class="user-list-component">
     <div class="search-line">
       <div class="single-item">
-        <span class="item-label">用户名：</span>
+        <span class="item-label">账号：</span>
         <span>
           <el-input
             style="width: 180px"
             clearable
-            v-model="search.key"
-            placeholder="请输入账号/邮箱"
+            v-model="search.userName"
+            placeholder="请输入账号"
+          >
+          </el-input>
+        </span>
+      </div>
+      <div class="single-item">
+        <span class="item-label">邮箱：</span>
+        <span>
+          <el-input
+            style="width: 180px"
+            clearable
+            v-model="search.email"
+            placeholder="请输入邮箱"
           >
           </el-input>
         </span>
@@ -27,8 +39,13 @@
         style="width: 100%"
       >
         <el-table-column type="index" width="50" />
-        <el-table-column prop="account" label="账号名" />
-        <el-table-column prop="name" label="名称" />
+        <el-table-column prop="account" label="账号">
+          <template #default="scope">
+            <span class="link-span" @click="editHandler(scope.row)">
+              {{ `${scope.row.firstName}.${scope.row.lastName}` }}
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column prop="email" label="邮箱" />
         <el-table-column prop="createdDate" label="创建时间">
           <template #default="scope">
@@ -70,13 +87,15 @@ import { onBeforeMount, ref } from "vue";
 import { dateFormat } from "@/utils";
 import { ElMessageBox, ElMessage } from "element-plus";
 import { useRouter } from "vue-router";
+import { getUserList } from "@/api/user";
 
 onBeforeMount(() => {
   initListData();
 });
 
 const search = ref({
-  key: null,
+  userName: null,
+  email: null,
   offset: 0,
   pageSize: 10,
 });
@@ -96,20 +115,18 @@ const tableData = ref([
 ]);
 const initListData = () => {
   pageLoading.value = true;
-  setTimeout(() => {
-    pageLoading.value = false;
-  }, 1000);
-  // getCouponList(search.value)
-  //   .then((res) => {
-  //     if (res.code === 200) {
-  //       tableData.value = res.data.list;
-  //       pageVO.total = res.data.totalCount;
-  //     }
-  //   })
-  //   .finally(() => {
-  //     pageLoading.value = false;
-  //   });
+  getUserList(search.value)
+    .then((res) => {
+      if (res.code === 200) {
+        tableData.value = res.data;
+        pageVO.total = res.data.totalCount;
+      }
+    })
+    .finally(() => {
+      pageLoading.value = false;
+    });
 };
+initListData();
 const handleCurrentChange = (page) => {
   pageVO.value.current = page;
   search.value.offset = page * search.value.pageSize + 1;
@@ -121,7 +138,7 @@ const editHandler = (item) => {
   router.push({
     path: "/user/detail",
     query: {
-      account: item.account,
+      userId: item.userId,
     },
   });
 };
@@ -175,6 +192,11 @@ const deleteHandler = (item) => {
   :deep(.el-button.is-text) {
     padding: 0 !important;
     margin-right: 15px;
+  }
+  .link-span {
+    color: #409eff;
+    text-decoration: underline;
+    cursor: pointer;
   }
 }
 </style>

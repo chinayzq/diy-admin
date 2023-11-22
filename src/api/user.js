@@ -9,3 +9,9 @@ export function loginRequest(params) {
 export function loginOutRequest(params) {
   return axios.post('/loginout', params);
 }
+export function getUserList(params) {
+  return axios.get('/list/user', { params });
+}
+export function getUserDetail(userId) {
+  return axios.get(`/user/${userId}`);
+}

@@ -7,8 +7,20 @@
           <el-input
             style="width: 180px"
             clearable
-            v-model="search.key"
-            placeholder="订单ID/用户名"
+            v-model="search.orderId"
+            placeholder="订单ID"
+          >
+          </el-input>
+        </span>
+      </div>
+      <div class="single-item">
+        <span class="item-label">优惠券：</span>
+        <span>
+          <el-input
+            style="width: 180px"
+            clearable
+            v-model="search.couponCode"
+            placeholder="优惠券"
           >
           </el-input>
         </span>
@@ -27,7 +39,13 @@
         style="width: 100%"
       >
         <el-table-column type="index" width="50" />
-        <el-table-column prop="orderId" label="订单Id" />
+        <el-table-column prop="orderId" label="订单Id">
+          <template #default="scope">
+            <span class="link-span" @click="editHandler(scope.row)">
+              {{ scope.row.orderId }}
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column prop="createdDate" label="日期">
           <template #default="scope">
             <span>
@@ -35,8 +53,14 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="状态" />
-        <el-table-column prop="total" label="金额" />
+        <el-table-column prop="status" label="状态">
+          <template #default="scope">
+            <span>
+              {{ statusMap[scope.row.status] }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="paidPrice" label="金额" />
         <el-table-column prop="operation" label="操作">
           <template #default="scope">
             <el-button type="primary" text @click="editHandler(scope.row)">
@@ -62,14 +86,21 @@
 </template>
 
 <script setup>
-import { getCouponList, deleteCoupon } from "@/api/coupon";
 import { onBeforeMount, ref } from "vue";
 import { dateFormat } from "@/utils";
-import { ElMessageBox, ElMessage } from "element-plus";
 import { useRouter } from "vue-router";
+import { getOrderList } from "@/api/order";
+
+const statusMap = ref({
+  0: "on hold",
+  1: "processing",
+  2: "completed",
+  3: "refunded",
+});
 
 const search = ref({
-  key: null,
+  orderId: null,
+  couponCode: null,
   offset: 0,
   pageSize: 10,
 });
@@ -79,19 +110,19 @@ const pageVO = ref({
 });
 
 const pageLoading = ref(false);
-const tableData = ref([
-  {
-    orderId: "#12345",
-    createdDate: new Date().getTime(),
-    status: "processing",
-    total: "$18.88",
-  },
-]);
+const tableData = ref([]);
 const initListData = () => {
   pageLoading.value = true;
-  setTimeout(() => {
-    pageLoading.value = false;
-  }, 1000);
+  getOrderList(search.value)
+    .then((res) => {
+      if (res.code === 200) {
+        tableData.value = res.data;
+        pageVO.total = res.data.totalCount;
+      }
+    })
+    .finally(() => {
+      pageLoading.value = false;
+    });
 };
 initListData();
 const handleCurrentChange = (page) => {
@@ -108,28 +139,6 @@ const editHandler = (item) => {
       orderId: item.orderId,
     },
   });
-};
-
-const deleteHandler = (item) => {
-  ElMessageBox.confirm("确定删除该条数据吗?", "警告", {
-    confirmButtonText: "确认",
-    cancelButtonText: "取消",
-    type: "warning",
-  })
-    .then(() => {
-      deleteCoupon({ couponId: item.couponCode }).then((res) => {
-        if (res.code === 200) {
-          ElMessage({
-            message: "删除成功！",
-            type: "success",
-          });
-          initListData();
-        }
-      });
-    })
-    .catch(() => {
-      console.log("取消删除！");
-    });
 };
 </script>
 
@@ -159,6 +168,11 @@ const deleteHandler = (item) => {
   :deep(.el-button.is-text) {
     padding: 0 !important;
     margin-right: 15px;
+  }
+  .link-span {
+    color: #409eff;
+    text-decoration: underline;
+    cursor: pointer;
   }
 }
 </style>
