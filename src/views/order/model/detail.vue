@@ -27,6 +27,13 @@
           <span class="label">customer IP：</span>
           <span class="value">{{ orderDetail.customerIP || "-" }}</span>
         </el-col>
+        <el-col :span="12" class="single-item">
+          <span class="label">状态：</span>
+          <span class="value">{{ statusMap[orderDetail.status] || "-" }}</span>
+        </el-col>
+        <el-col :span="12" class="single-item">
+          <el-button type="primary">Refund</el-button>
+        </el-col>
       </el-row>
     </div>
     <div class="card-container">
@@ -136,6 +143,13 @@ import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getOrderDetail } from "@/api/order";
 import { dateFormat, buildImageUrl } from "@/utils";
+
+const statusMap = ref({
+  0: "on hold",
+  1: "processing",
+  2: "completed",
+  3: "refunded",
+});
 
 const route = useRoute();
 const pageLoading = ref(false);
