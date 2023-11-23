@@ -118,7 +118,7 @@ const initListData = () => {
     .then((res) => {
       if (res.code === 200) {
         tableData.value = res.data.list;
-        pageVO.total = res.data.totalCount;
+        pageVO.value.total = res.data.totalCount;
       }
     })
     .finally(() => {
@@ -127,7 +127,7 @@ const initListData = () => {
 };
 const handleCurrentChange = (page) => {
   pageVO.value.current = page;
-  search.value.offset = page * search.value.pageSize + 1;
+  search.value.offset = (page - 1) * search.value.pageSize;
   initListData();
 };
 

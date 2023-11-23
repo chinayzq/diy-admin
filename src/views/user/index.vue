@@ -107,21 +107,14 @@ const pageVO = ref({
 });
 
 const pageLoading = ref(false);
-const tableData = ref([
-  {
-    account: "alain.st-pierre",
-    name: "alain st-pierre",
-    email: "alainstpierre89@hotmail.com",
-    createdDate: new Date().getTime(),
-  },
-]);
+const tableData = ref([]);
 const initListData = () => {
   pageLoading.value = true;
   getUserList(search.value)
     .then((res) => {
       if (res.code === 200) {
-        tableData.value = res.data;
-        pageVO.total = res.data.totalCount;
+        tableData.value = res.data.list;
+        pageVO.value.total = res.data.totalCount;
       }
     })
     .finally(() => {
@@ -131,7 +124,7 @@ const initListData = () => {
 initListData();
 const handleCurrentChange = (page) => {
   pageVO.value.current = page;
-  search.value.offset = page * search.value.pageSize + 1;
+  search.value.offset = (page - 1) * search.value.pageSize;
   initListData();
 };
 

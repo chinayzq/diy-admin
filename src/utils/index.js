@@ -144,6 +144,7 @@ export function getUrlParams(url) {
 }
 // 拼接图片地址
 export function buildImageUrl(id) {
+  if (!id) return ''
   if (id.includes('/diyadmin')) return id;
   return `/diyadmin/download?fileId=${id}`;
 }

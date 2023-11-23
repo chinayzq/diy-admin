@@ -116,8 +116,8 @@ const initListData = () => {
   getOrderList(search.value)
     .then((res) => {
       if (res.code === 200) {
-        tableData.value = res.data;
-        pageVO.total = res.data.totalCount;
+        tableData.value = res.data.list;
+        pageVO.value.total = res.data.totalCount;
       }
     })
     .finally(() => {
@@ -127,7 +127,7 @@ const initListData = () => {
 initListData();
 const handleCurrentChange = (page) => {
   pageVO.value.current = page;
-  search.value.offset = page * search.value.pageSize + 1;
+  search.value.offset = (page - 1) * search.value.pageSize;
   initListData();
 };
 
