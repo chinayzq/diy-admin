@@ -21,18 +21,20 @@
         </el-col>
         <el-col :span="12" class="single-item">
           <span class="label">支付方式：</span>
-          <span class="value">{{ orderDetail.payMethod || "-" }}</span>
+          <span class="value">{{
+            paymentMethodsOptions[orderDetail.paymentMethod] || "-"
+          }}</span>
         </el-col>
         <el-col :span="12" class="single-item">
           <span class="label">customer IP：</span>
-          <span class="value">{{ orderDetail.customerIP || "-" }}</span>
+          <span class="value">{{ orderDetail.clientIp || "-" }}</span>
         </el-col>
         <el-col :span="12" class="single-item">
           <span class="label">状态：</span>
           <span class="value">{{ statusMap[orderDetail.status] || "-" }}</span>
         </el-col>
         <el-col :span="12" class="single-item">
-          <el-button type="primary">Refund</el-button>
+          <el-button type="primary" @click="refundHandler">Refund</el-button>
         </el-col>
       </el-row>
     </div>
@@ -134,6 +136,30 @@
           </el-collapse>
         </el-col>
       </el-row>
+      <el-row class="pay-info-line">
+        <el-col :span="6" :offset="18">
+          <span class="label"> 商品小计： </span>
+          <span class="value">
+            {{ `$${orderDetail.paidPrice}` }}
+          </span>
+        </el-col>
+      </el-row>
+      <el-row class="pay-info-line">
+        <el-col :span="6" :offset="18">
+          <span class="label"> 优惠金额： </span>
+          <span class="value">
+            {{ `$${orderDetail.discountPrice}` }}
+          </span>
+        </el-col>
+      </el-row>
+      <el-row class="pay-info-line">
+        <el-col :span="6" :offset="18">
+          <span class="label"> 实付金额： </span>
+          <span class="value">
+            {{ `$${orderDetail.paidPrice}` }}
+          </span>
+        </el-col>
+      </el-row>
     </div>
   </div>
 </template>
@@ -141,8 +167,9 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getOrderDetail } from "@/api/order";
+import { getOrderDetail, refundRequest } from "@/api/order";
 import { dateFormat, buildImageUrl } from "@/utils";
+import { ElMessageBox, ElMessage } from "element-plus";
 
 const statusMap = ref({
   0: "on hold",
@@ -150,6 +177,38 @@ const statusMap = ref({
   2: "completed",
   3: "refunded",
 });
+const paymentMethodsOptions = ref({
+  0: "paypal",
+  1: "信用卡",
+});
+
+const refundHandler = () => {
+  const { orderId } = route.query;
+  ElMessageBox.confirm("确定修改状态为Refunded吗?", "警告", {
+    confirmButtonText: "确认",
+    cancelButtonText: "取消",
+    type: "warning",
+  })
+    .then(() => {
+      refundRequest(orderId).then((res) => {
+        if (res.code === 200) {
+          ElMessage({
+            message: "修改成功！",
+            type: "success",
+          });
+          initDatas();
+        } else {
+          ElMessage({
+            message: res.message,
+            type: "warning",
+          });
+        }
+      });
+    })
+    .catch(() => {
+      console.log("取消删除！");
+    });
+};
 
 const route = useRoute();
 const pageLoading = ref(false);
@@ -264,6 +323,20 @@ const downloadImage = (imageUrl) => {
             }
           }
         }
+      }
+    }
+    .pay-info-line {
+      text-align: left;
+      margin-top: 15px;
+      font-size: 16px;
+      .label {
+        font-weight: bold;
+        color: #777;
+        margin-right: 20px;
+      }
+      .value {
+        color: #000;
+        font-weight: bold;
       }
     }
   }

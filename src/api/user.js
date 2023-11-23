@@ -15,3 +15,6 @@ export function getUserList(params) {
 export function getUserDetail(userId) {
   return axios.get(`/user/${userId}`);
 }
+export function deleteUser(userId) {
+  return axios.delete(`/user/${userId}`);
+}

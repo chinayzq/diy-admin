@@ -6,6 +6,7 @@
         <el-col :span="12" class="single-item">
           <span class="label">账号：</span>
           <span class="value">{{
+            userDetail.userName ||
             `${userDetail.firstName}.${userDetail.lastName}`
           }}</span>
         </el-col>

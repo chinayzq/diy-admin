@@ -6,3 +6,6 @@ export function getOrderList(params) {
 export function getOrderDetail(orderId) {
   return axios.get(`/order/${orderId}`);
 }
+export function refundRequest(orderId) {
+  return axios.post(`/refundorder/${orderId}`);
+}

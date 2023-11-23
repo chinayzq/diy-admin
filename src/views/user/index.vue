@@ -42,7 +42,10 @@
         <el-table-column prop="account" label="账号">
           <template #default="scope">
             <span class="link-span" @click="editHandler(scope.row)">
-              {{ `${scope.row.firstName}.${scope.row.lastName}` }}
+              {{
+                scope.row.userName ||
+                `${scope.row.firstName}${scope.row.lastName}`
+              }}
             </span>
           </template>
         </el-table-column>
@@ -82,12 +85,11 @@
 </template>
 
 <script setup>
-import { getCouponList, deleteCoupon } from "@/api/coupon";
 import { onBeforeMount, ref } from "vue";
 import { dateFormat } from "@/utils";
 import { ElMessageBox, ElMessage } from "element-plus";
 import { useRouter } from "vue-router";
-import { getUserList } from "@/api/user";
+import { getUserList, deleteUser } from "@/api/user";
 
 onBeforeMount(() => {
   initListData();
@@ -143,14 +145,14 @@ const editHandler = (item) => {
   });
 };
 
-const deleteHandler = (item) => {
-  ElMessageBox.confirm("确定删除该条数据吗?", "警告", {
+const deleteHandler = ({ userId }) => {
+  ElMessageBox.confirm("确定删除该用户吗?", "警告", {
     confirmButtonText: "确认",
     cancelButtonText: "取消",
     type: "warning",
   })
     .then(() => {
-      deleteCoupon({ couponId: item.couponCode }).then((res) => {
+      deleteUser(userId).then((res) => {
         if (res.code === 200) {
           ElMessage({
             message: "删除成功！",
