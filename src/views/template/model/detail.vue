@@ -151,7 +151,7 @@
               width: `${item.width}px`,
               top: `${item.top}px`,
               left: `${item.left}px`,
-              transform: `rotate(${item.rotate}deg)`,
+              transform: `rotate(${item.rotate}deg) scale(${item.scale})`,
               zIndex: item.active ? 9999 : `${item.zIndex}`,
             }"
             :class="['drag-image', item.active && 'drag-image-active']"
@@ -205,8 +205,19 @@
       </div>
     </div>
     <div class="sticker-part">
-      <el-input type="textarea" v-model="json"></el-input>
-      <el-button type="primary" @click="importJson">导入</el-button>
+      <div v-if="env === 'development'">
+        <el-input
+          style="margin-bottom: 10px"
+          type="textarea"
+          v-model="json"
+        ></el-input>
+        <el-button
+          style="margin-bottom: 10px"
+          type="primary"
+          @click="importJson"
+          >导入</el-button
+        >
+      </div>
       <div class="common-title">贴纸</div>
       <StickerCollapse @add="addStickerToGraph" />
     </div>
@@ -237,21 +248,13 @@ import PlusIcon from "@/assets/images/drag_plus_icon.svg";
 import ResizeIcon from "@/assets/images/drag_resize_icon.png";
 import RotateIcon from "@/assets/images/drag_rotate_icon.svg";
 import StickerCollapse from "../components/stickerCollapse.vue";
-
+const env = import.meta.env.MODE;
+console.log("env", env);
 const json = ref(null);
 const importJson = () => {
+  dragStickerList.value = [];
   const parseJson = JSON.parse(json.value);
   const { targetSize, content } = parseJson;
-  // let index = 0;
-  // let intervalIns = setInterval(() => {
-  //   if (content[index]) {
-  //     const current = itemTransform(content[index], targetSize);
-  //     addJsonStrickers(current);
-  //     index++;
-  //   } else {
-  //     window.clearInterval(intervalIns);
-  //   }
-  // }, 1000);
   content.forEach((item) => {
     const current = itemTransform(item, targetSize);
     addJsonStrickers(current);
@@ -265,6 +268,7 @@ const addJsonStrickers = ({
   left,
   rotate,
   zIndex,
+  scale,
 }) => {
   dragStickerList.value.push({
     url,
@@ -274,6 +278,7 @@ const addJsonStrickers = ({
     left,
     rotate,
     zIndex,
+    scale,
     active: false,
     id: uuid(),
   });
@@ -285,8 +290,8 @@ const itemTransform = (item, targetSize) => {
     url: itemData,
     rotate: rotate,
     zIndex: zIndex,
+    scale: scaleNum,
   };
-
   // 获取当前画布宽度、高度, 计算贴纸在当前画布的真实尺寸
   const imageDom = document.getElementsByClassName("single-graph-image")[0];
   const graphWidth = getComputedStyle(imageDom, null)["width"];
@@ -296,12 +301,10 @@ const itemTransform = (item, targetSize) => {
     targetSize.height / Number(graphHeight.substr(0, graphHeight.length - 2));
   const widthScale =
     targetSize.width / Number(graphWidth.substr(0, graphWidth.length - 2));
-  // const height = (itemH / targetSize.height) * graphHeight;
-  // const width = (itemW / targetSize.width) * graphWidth;
   const height = itemH / heightScale;
   const width = itemW / widthScale;
-  resultItem.height = height * scaleNum;
-  resultItem.width = width * scaleNum;
+  resultItem.height = height;
+  resultItem.width = width;
 
   const left = itemX / widthScale;
   const top = itemY / heightScale;
