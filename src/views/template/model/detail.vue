@@ -205,6 +205,8 @@
       </div>
     </div>
     <div class="sticker-part">
+      <el-input type="textarea" v-model="json"></el-input>
+      <el-button type="primary" @click="importJson">导入</el-button>
       <div class="common-title">贴纸</div>
       <StickerCollapse @add="addStickerToGraph" />
     </div>
@@ -235,6 +237,78 @@ import PlusIcon from "@/assets/images/drag_plus_icon.svg";
 import ResizeIcon from "@/assets/images/drag_resize_icon.png";
 import RotateIcon from "@/assets/images/drag_rotate_icon.svg";
 import StickerCollapse from "../components/stickerCollapse.vue";
+
+const json = ref(null);
+const importJson = () => {
+  const parseJson = JSON.parse(json.value);
+  const { targetSize, content } = parseJson;
+  // let index = 0;
+  // let intervalIns = setInterval(() => {
+  //   if (content[index]) {
+  //     const current = itemTransform(content[index], targetSize);
+  //     addJsonStrickers(current);
+  //     index++;
+  //   } else {
+  //     window.clearInterval(intervalIns);
+  //   }
+  // }, 1000);
+  content.forEach((item) => {
+    const current = itemTransform(item, targetSize);
+    addJsonStrickers(current);
+  });
+};
+const addJsonStrickers = ({
+  url,
+  height,
+  width,
+  top,
+  left,
+  rotate,
+  zIndex,
+}) => {
+  dragStickerList.value.push({
+    url,
+    height,
+    width,
+    top,
+    left,
+    rotate,
+    zIndex,
+    active: false,
+    id: uuid(),
+  });
+};
+const itemTransform = (item, targetSize) => {
+  const { itemH, itemW, itemX, itemY, itemData, rotate, zIndex, scaleNum } =
+    item;
+  const resultItem = {
+    url: itemData,
+    rotate: rotate,
+    zIndex: zIndex,
+  };
+
+  // 获取当前画布宽度、高度, 计算贴纸在当前画布的真实尺寸
+  const imageDom = document.getElementsByClassName("single-graph-image")[0];
+  const graphWidth = getComputedStyle(imageDom, null)["width"];
+  const graphHeight = getComputedStyle(imageDom, null)["height"];
+  // 计算当前画布和数据画布的宽高比例
+  const heightScale =
+    targetSize.height / Number(graphHeight.substr(0, graphHeight.length - 2));
+  const widthScale =
+    targetSize.width / Number(graphWidth.substr(0, graphWidth.length - 2));
+  // const height = (itemH / targetSize.height) * graphHeight;
+  // const width = (itemW / targetSize.width) * graphWidth;
+  const height = itemH / heightScale;
+  const width = itemW / widthScale;
+  resultItem.height = height * scaleNum;
+  resultItem.width = width * scaleNum;
+
+  const left = itemX / widthScale;
+  const top = itemY / heightScale;
+  resultItem.left = left;
+  resultItem.top = top;
+  return resultItem;
+};
 
 const route = useRoute();
 onBeforeMount(() => {
@@ -450,6 +524,7 @@ const addStickerToGraph = (url) => {
     width: 100,
     top: 280,
     left: 100,
+    rotate: 0,
     zIndex: getMaxIndex(),
     active: false,
   });
