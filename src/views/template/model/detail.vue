@@ -785,6 +785,7 @@ const saveTemplate = async () => {
 .template-detail-component {
   height: 100%;
   display: flex;
+  overflow: hidden;
   .basic-image-part {
     flex: 1;
     margin-right: 20px;
