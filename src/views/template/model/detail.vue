@@ -287,7 +287,7 @@ const itemTransform = (item, targetSize) => {
   const { itemH, itemW, itemX, itemY, itemData, rotate, zIndex, scaleNum } =
     item;
   const resultItem = {
-    url: itemData,
+    url: `/diyadmin/download?fileId=${itemData}`,
     rotate: rotate,
     zIndex: zIndex,
     scale: scaleNum,
@@ -851,6 +851,7 @@ const saveTemplate = async () => {
         position: absolute;
       }
       .mask-container {
+        line-height: 0;
         position: relative;
         // -webkit-mask-image: url("../../../assets/images/img_error.png");
         // -webkit-mask-image: url("../../../assets/images/mask_demo.png");
