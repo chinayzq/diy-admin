@@ -256,6 +256,7 @@ const importJson = () => {
   const parseJson = JSON.parse(json.value);
   const { targetSize, content } = parseJson;
   content.forEach((item) => {
+    if (item.itemData.length !== 32) return;
     const current = itemTransform(item, targetSize);
     addJsonStrickers(current);
   });
@@ -363,7 +364,7 @@ const initTemplateDetails = (templateId) => {
       dragStickerList.value = templateData.basedata;
       formData.value.selectModel = phoneCode;
       formData.value.templateName = res.data.templateName;
-      modelChange(phoneCode, templateData);
+      modelChange(phoneCode, templateData, true);
     } else {
       ElMessage.warning("获取模板数据失败！");
     }
@@ -386,8 +387,8 @@ const initModelList = () => {
     }
   });
 };
-const modelChange = (model, selectImages) => {
-  getModelImages(model, selectImages);
+const modelChange = (model, selectImages, notSelect) => {
+  getModelImages(model, selectImages, notSelect);
 };
 
 /**
@@ -397,7 +398,7 @@ const imageContainerLoading = ref(false);
 const modelImageList = ref([]);
 const caseImageList = ref([]);
 const maskImageList = ref([]);
-const getModelImages = (phoneCode, selectImages) => {
+const getModelImages = (phoneCode, selectImages, notSelect) => {
   imageContainerLoading.value = true;
   getPhoneColor({ phoneCode })
     .then((res) => {
@@ -451,6 +452,11 @@ const getModelImages = (phoneCode, selectImages) => {
           (item) => item.url === maskImage
         )[0];
         setSelectImage("mask", maskItem, maskImageList.value);
+      }
+      if (!notSelect) {
+        setSelectImage("model", modelImageList.value[0], modelImageList.value);
+        setSelectImage("case", caseImageList.value[0], caseImageList.value);
+        setSelectImage("mask", maskImageList.value[0], maskImageList.value);
       }
     });
 };
@@ -770,9 +776,9 @@ const saveTemplate = async () => {
           message: "模板保存成功！",
           type: "success",
         });
-        setTimeout(() => {
-          router.push("/template");
-        }, 2000);
+        // setTimeout(() => {
+        //   router.push("/template");
+        // }, 2000);
       }
     })
     .finally(() => {
