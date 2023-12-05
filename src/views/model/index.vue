@@ -99,7 +99,7 @@ const statusChangeHandler = ({ status, phoneCode }) => {
     status,
     phoneCode,
   }).then((res) => {
-    if (res.code === 1) {
+    if (res.code === 200) {
       ElMessage.success("修改成功！");
       initListData();
     }
