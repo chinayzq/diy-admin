@@ -36,6 +36,17 @@
         <el-table-column type="index" width="50" />
         <el-table-column prop="brandName" label="品牌" />
         <el-table-column prop="phoneName" label="机型" />
+        <el-table-column prop="status" label="显示/隐藏">
+          <template #default="scope">
+            <el-switch
+              :before-change="beforeChangeColumn"
+              @change="statusChangeHandler(scope.row)"
+              v-model="scope.row.status"
+              active-value="0"
+              inactive-value="1"
+            />
+          </template>
+        </el-table-column>
         <el-table-column prop="operation" label="操作" width="500">
           <template #default="scope">
             <el-button
@@ -70,10 +81,30 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { getModelList } from "@/api/model.js";
+import { getModelList, modelStatusChange } from "@/api/model.js";
 import ModelDialog from "./components/modelDialog.vue";
 import CaseDialog from "./components/caseDialog.vue";
 import PrintDialog from "./components/printDialog.vue";
+import { ElMessage } from "element-plus";
+
+const switchState = ref(false);
+const beforeChangeColumn = () => {
+  switchState.value = true;
+  return switchState.value;
+};
+// 1无效，0有效
+const statusChangeHandler = ({ status, phoneCode }) => {
+  if (!switchState.value) return;
+  modelStatusChange({
+    status,
+    phoneCode,
+  }).then((res) => {
+    if (res.code === 1) {
+      ElMessage.success("修改成功！");
+      initListData();
+    }
+  });
+};
 
 const printSetDialog = ref({
   show: false,

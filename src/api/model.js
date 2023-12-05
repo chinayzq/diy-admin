@@ -8,3 +8,6 @@ export function getPhoneColor(params) {
 export function createPhoneColor(params) {
   return axios.post('/createphonecolor', params);
 }
+export function modelStatusChange(params) {
+  return axios.post(`/updatephonestatus/${params.phoneCode}/${params.status}`);
+}
