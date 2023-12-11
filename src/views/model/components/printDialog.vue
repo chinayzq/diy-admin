@@ -32,7 +32,7 @@ import { ref, watch } from "vue";
 import { createPhoneColor, getPhoneColor } from "@/api/model";
 import { ElMessage } from "element-plus";
 import config from "~/config";
-import { buildImageUrl } from "@/utils/index.js";
+
 const beseUploadUrl = config[import.meta.env.MODE].uploadUrl;
 const emit = defineEmits();
 const props = defineProps({

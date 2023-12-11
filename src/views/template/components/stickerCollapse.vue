@@ -27,6 +27,7 @@
 <script setup>
 import { ref, onBeforeMount } from "vue";
 import { getStickerList, getStickerDetails } from "@/api/sticker";
+import { buildImageUrlNew } from "@/utils";
 const emit = defineEmits();
 const addStickerToGraph = ({ url }) => {
   emit("add", url);
@@ -45,7 +46,12 @@ const initStickerList = () => {
   })
     .then((res) => {
       if (res.code === 200) {
-        stickerList.value = res.data.list.sort((a, b) => a.id - b.id);
+        stickerList.value = res.data.list
+          .sort((a, b) => a.id - b.id)
+          .map((item) => {
+            item.stickerUrl = buildImageUrlNew(item.stickerUrl);
+            return item;
+          });
       } else {
         stickerList.value = [];
       }
@@ -61,7 +67,10 @@ const collapseChange = (index) => {
     .then((res) => {
       stickerList.value.forEach((item) => {
         if (item.id === index) {
-          item.stickerChildlist = res.data.stickerChildlist;
+          item.stickerChildlist = res.data.stickerChildlist.map((item) => {
+            item.url = buildImageUrlNew(item.url);
+            return item;
+          });
         }
       });
     })

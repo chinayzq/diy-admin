@@ -240,7 +240,7 @@ import { getPhoneColor, getModelList } from "@/api/model";
 import { getItemByClassId } from "@/api/dictionary";
 import { updateTemplate, getTemplateDetail } from "@/api/template";
 import { useRoute, useRouter } from "vue-router";
-import { uuid } from "@/utils";
+import { uuid, buildImageUrlNew } from "@/utils";
 import { ElMessage } from "element-plus";
 import { exportAsImage } from "@/utils/domToImage";
 import DeleteIcon from "@/assets/images/drag_delete_icon.png";
@@ -248,6 +248,7 @@ import PlusIcon from "@/assets/images/drag_plus_icon.svg";
 import ResizeIcon from "@/assets/images/drag_resize_icon.png";
 import RotateIcon from "@/assets/images/drag_rotate_icon.svg";
 import StickerCollapse from "../components/stickerCollapse.vue";
+
 const env = import.meta.env.MODE;
 console.log("env", env);
 const json = ref(null);
@@ -407,6 +408,7 @@ const getModelImages = (phoneCode, selectImages, notSelect) => {
           .filter((item) => item.type === "1")
           .map((item) => item.colorUrlList)[0]
           .map((item) => {
+            item.url = buildImageUrlNew(item.url);
             return {
               ...item,
               ...{ active: false },
@@ -416,6 +418,8 @@ const getModelImages = (phoneCode, selectImages, notSelect) => {
           .filter((item) => item.type === "2")
           .map((item) => item.colorUrlList)[0]
           .map((item) => {
+            item.url = buildImageUrlNew(item.url);
+            item.exampleUrl = buildImageUrlNew(item.exampleUrl);
             return {
               ...item,
               ...{ active: false },
@@ -425,6 +429,7 @@ const getModelImages = (phoneCode, selectImages, notSelect) => {
           .filter((item) => item.type === "3")
           .map((item) => item.colorUrlList)[0]
           .map((item) => {
+            item.url = buildImageUrlNew(item.url);
             return {
               ...item,
               ...{ active: false },

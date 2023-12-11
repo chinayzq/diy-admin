@@ -157,7 +157,7 @@ import { ref, watch } from "vue";
 import { createPhoneColor, getPhoneColor } from "@/api/model";
 import { ElMessage } from "element-plus";
 import config from "~/config";
-import { buildImageUrl } from "@/utils/index.js";
+import { buildImageUrlNew } from "@/utils/index.js";
 const beseUploadUrl = config[import.meta.env.MODE].uploadUrl;
 const emit = defineEmits();
 const props = defineProps({
@@ -182,7 +182,11 @@ const initAndDisplayDatas = (datas) => {
   const { type, phoneCode } = datas;
   getPhoneColor({ type, phoneCode }).then((res) => {
     if (res.code === 200) {
-      itemList.value = res.data[0].colorUrlList;
+      itemList.value = res.data[0].colorUrlList.map((item) => {
+        item.url = buildImageUrlNew(item.url);
+        item.exampleUrl = buildImageUrlNew(item.exampleUrl);
+        return item;
+      });
     } else {
       itemList.value = [];
     }
@@ -262,11 +266,11 @@ const beforeUploadHandler2 = (index) => {
   itemList.value[index].uploadLoading2 = true;
 };
 const handleAvatarSuccess = (response, uploadFile, index) => {
-  itemList.value[index].url = buildImageUrl(response.data);
+  itemList.value[index].url = buildImageUrlNew(response.data);
   itemList.value[index].uploadLoading1 = false;
 };
 const handleAvatarSuccess2 = (response, uploadFile, index) => {
-  itemList.value[index].exampleUrl = buildImageUrl(response.data);
+  itemList.value[index].exampleUrl = buildImageUrlNew(response.data);
   itemList.value[index].uploadLoading2 = false;
 };
 </script>

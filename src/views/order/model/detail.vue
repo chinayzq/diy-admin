@@ -54,7 +54,7 @@
         <el-col :span="1">
           <img
             style="width: 100%"
-            :src="buildImageUrl(item.templateUrl)"
+            :src="buildImageUrlNew(item.templateUrl)"
             alt=""
           />
         </el-col>
@@ -97,7 +97,7 @@
                   <div>
                     <img
                       style="height: 100px"
-                      :src="buildImageUrl(item.templateUrl)"
+                      :src="buildImageUrlNew(item.templateUrl)"
                       alt=""
                     />
                   </div>
@@ -112,7 +112,7 @@
                   <div>
                     <img
                       style="height: 100px"
-                      :src="buildImageUrl(item.extendJson.printUrl)"
+                      :src="buildImageUrlNew(item.extendJson.printUrl)"
                       alt=""
                     />
                   </div>
@@ -126,7 +126,7 @@
                       v-for="(image, imageIndex) in item.productImageList"
                       :key="imageIndex"
                       style="height: 100px; width: 100px"
-                      :src="buildImageUrl(image)"
+                      :src="buildImageUrlNew(image)"
                       alt=""
                     />
                   </div>
@@ -140,7 +140,15 @@
         <el-col :span="6" :offset="18">
           <span class="label"> 商品小计： </span>
           <span class="value">
-            {{ `$${orderDetail.paidPrice}` }}
+            {{ `$${orderDetail.paidPrice - orderDetail.shippingFree}` }}
+          </span>
+        </el-col>
+      </el-row>
+      <el-row class="pay-info-line">
+        <el-col :span="6" :offset="18">
+          <span class="label"> 运 费： </span>
+          <span class="value">
+            {{ `$${orderDetail.shippingFree}` }}
           </span>
         </el-col>
       </el-row>
@@ -168,7 +176,7 @@
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getOrderDetail, refundRequest } from "@/api/order";
-import { dateFormat, buildImageUrl } from "@/utils";
+import { dateFormat, buildImageUrlNew } from "@/utils";
 import { ElMessageBox, ElMessage } from "element-plus";
 
 const statusMap = ref({
@@ -231,7 +239,7 @@ const productJson = computed(() => orderDetail.value?.productJson);
 initDatas();
 
 const downloadImage = (imageUrl) => {
-  const url = buildImageUrl(imageUrl);
+  const url = buildImageUrlNew(imageUrl);
   let image = new Image();
   image.src = url;
   // 解决跨域 Canvas 污染问题
@@ -333,6 +341,9 @@ const downloadImage = (imageUrl) => {
         font-weight: bold;
         color: #777;
         margin-right: 20px;
+        text-align: right;
+        display: inline-block;
+        width: 90px;
       }
       .value {
         color: #000;

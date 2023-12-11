@@ -107,7 +107,7 @@
 import { createPhoneSticker, getStickerDetails } from "@/api/sticker";
 import { ref, watch } from "vue";
 import { ElMessage } from "element-plus";
-import { buildImageUrl } from "@/utils/index.js";
+import { buildImageUrlNew } from "@/utils/index.js";
 import config from "~/config";
 const beseUploadUrl = config[import.meta.env.MODE].uploadUrl;
 const emit = defineEmits();
@@ -170,7 +170,12 @@ const initAndDisplayDatas = (datas) => {
     id: datas.datas.id,
   })
     .then((res) => {
-      formData.value.stickerChildlist = res.data.stickerChildlist;
+      formData.value.stickerChildlist = res.data.stickerChildlist.map(
+        (item) => {
+          item.url = buildImageUrlNew(item.url);
+          return item;
+        }
+      );
     })
     .finally(() => {
       childListLoading.value = false;
@@ -197,7 +202,7 @@ const beforeUploadHandler = () => {
   uploadLoading.value = true;
 };
 const handleAvatarSuccess = (response, uploadFile) => {
-  formData.value.stickerUrl = buildImageUrl(response.data);
+  formData.value.stickerUrl = buildImageUrlNew(response.data);
   stickerFormIns.value.validateField("stickerUrl", () => null);
   uploadLoading.value = false;
 };
@@ -222,7 +227,9 @@ const submitHandler = () => {
         stickerChildlist: formData.value.stickerChildlist.map((item) => {
           return {
             stickerChildName: item.stickerChildName || item.name,
-            url: buildImageUrl(item.response ? item.response.data : item.url),
+            url: buildImageUrlNew(
+              item.response ? item.response.data : item.url
+            ),
           };
         }),
       };

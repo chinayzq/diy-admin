@@ -46,6 +46,8 @@ import { getStickerList, deletePhoneSticker } from "@/api/sticker";
 import { onBeforeMount, ref } from "vue";
 import StickerDialog from "./components/stickerDialog.vue";
 import { ElMessageBox, ElMessage } from "element-plus";
+import { buildImageUrlNew } from "@/utils";
+
 const pageLoading = ref(false);
 const tableData = ref([]);
 const stickerDialogDatas = ref({
@@ -60,7 +62,10 @@ const getTableDatas = () => {
   pageLoading.value = true;
   getStickerList()
     .then((res) => {
-      tableData.value = res.data.list;
+      tableData.value = res.data.list.map((item) => {
+        item.stickerUrl = buildImageUrlNew(item.stickerUrl);
+        return item;
+      });
     })
     .finally(() => {
       pageLoading.value = false;

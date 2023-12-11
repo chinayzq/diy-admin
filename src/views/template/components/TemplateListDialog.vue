@@ -18,7 +18,7 @@
               </div>
               <div class="image-container">
                 <!-- <img src="@/assets/images/template_demo.png" alt="" /> -->
-                <img v-lazy="buildImageUrl(item.templateUrl)" alt="" />
+                <img v-lazy="buildImageUrlNew(item.templateUrl)" alt="" />
               </div>
               <div class="single-operation">
                 <el-button type="primary" @click="jumpToTemplateDetail(item)"
@@ -50,7 +50,7 @@ import { ref, watch } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { getTemplateList, deleteTemplate } from "@/api/template";
 import { useRouter } from "vue-router";
-import { buildImageUrl } from "@/utils/index.js";
+import { buildImageUrlNew } from "@/utils/index.js";
 const emit = defineEmits();
 const props = defineProps({
   dataset: {

@@ -144,9 +144,17 @@ export function getUrlParams(url) {
 }
 // 拼接图片地址
 export function buildImageUrl(id) {
-  if (!id) return ''
+  if (!id) return '';
   if (id.includes('/diyadmin')) return id;
   return `/diyadmin/download?fileId=${id}`;
+}
+// 拼接图片地址 - new
+export function buildImageUrlNew(id) {
+  if (!id) return '';
+  if (id.includes('/diyadmin/download?fileId=')) {
+    return id.replace('/diyadmin/download?fileId=', 'https://ossdiyphone.com/');
+  }
+  return `https://ossdiyphone.com/${id}`;
 }
 // 生成唯一的id
 export function uuid() {

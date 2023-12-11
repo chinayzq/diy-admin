@@ -42,7 +42,6 @@ import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import { computed, onBeforeUnmount, ref, shallowRef, watch } from "vue";
 import { updateArticle, getArticleDetailById } from "@/api/article";
 import { ElMessage } from "element-plus";
-import { buildImageUrl } from "@/utils/index.js";
 
 const formData = ref({
   id: null,
