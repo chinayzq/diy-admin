@@ -5,6 +5,8 @@ import path from 'path';
 import copy from 'rollup-plugin-copy';
 import topLevelAwait from 'vite-plugin-top-level-await';
 import DefineOptions from 'unplugin-vue-define-options/vite';
+const Timestamp = new Date().getTime(); //随机时间戳
+
 const baseUrl = {
   development: './',
   sit: './',
@@ -50,12 +52,19 @@ export default ({ mode }) =>
     },
     build: {
       outDir: 'diyadmin',
+      rollupOptions: {
+        output: {
+          chunkFileNames: `static/js/[name].[hash].${Timestamp}.js`,
+          entryFileNames: `static/js/[name].[hash].${Timestamp}.js`,
+          assetFileNames: `static/[ext]/[name].[hash].${Timestamp}.[ext]`,
+        },
+      },
     },
     server: {
       hmr: true,
       proxy: {
         '/diyadmin': {
-          target: 'http://43.159.137.119:8083/',
+          target: 'https://admin.memtoys.com/',
           changeOrigin: true,
           // rewrite: (path) => path.replace(/^\/saascloud/, 'saascloud'),
         },

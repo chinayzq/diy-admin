@@ -30,7 +30,7 @@
               <img
                 v-if="item.url"
                 @click.stop="handlePictureCardPreview(item.url)"
-                v-lazy="item.url"
+                v-lazy="buildImageUrlNew(item.url)"
                 class="avatar"
               />
               <el-icon v-else class="el-icon-plus avatar-uploader-icon"
@@ -65,7 +65,7 @@
               <img
                 v-if="item.exampleUrl"
                 @click.stop="handlePictureCardPreview(item.exampleUrl)"
-                v-lazy="item.exampleUrl"
+                v-lazy="buildImageUrlNew(item.exampleUrl)"
                 class="avatar"
               />
               <el-icon v-else class="el-icon-plus avatar-uploader-icon"
@@ -183,8 +183,8 @@ const initAndDisplayDatas = (datas) => {
   getPhoneColor({ type, phoneCode }).then((res) => {
     if (res.code === 200) {
       itemList.value = res.data[0].colorUrlList.map((item) => {
-        item.url = buildImageUrlNew(item.url);
-        item.exampleUrl = buildImageUrlNew(item.exampleUrl);
+        item.url = item.url;
+        item.exampleUrl = item.exampleUrl;
         return item;
       });
     } else {
@@ -266,11 +266,13 @@ const beforeUploadHandler2 = (index) => {
   itemList.value[index].uploadLoading2 = true;
 };
 const handleAvatarSuccess = (response, uploadFile, index) => {
-  itemList.value[index].url = buildImageUrlNew(response.data);
+  debugger;
+  itemList.value[index].url = response.data;
   itemList.value[index].uploadLoading1 = false;
 };
 const handleAvatarSuccess2 = (response, uploadFile, index) => {
-  itemList.value[index].exampleUrl = buildImageUrlNew(response.data);
+  debugger;
+  itemList.value[index].exampleUrl = response.data;
   itemList.value[index].uploadLoading2 = false;
 };
 </script>

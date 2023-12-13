@@ -151,6 +151,9 @@ export function buildImageUrl(id) {
 // 拼接图片地址 - new
 export function buildImageUrlNew(id) {
   if (!id) return '';
+  if (id.includes('https://ossdiyphone.com/')) {
+    return id;
+  }
   if (id.includes('/diyadmin/download?fileId=')) {
     return id.replace('/diyadmin/download?fileId=', 'https://ossdiyphone.com/');
   }
