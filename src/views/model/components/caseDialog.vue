@@ -74,7 +74,7 @@
             </el-upload>
             <el-icon
               @click="iconDelete2(item)"
-              v-show="item.url"
+              v-show="item.exampleUrl"
               class="el-icon-delete"
               ><Delete
             /></el-icon>

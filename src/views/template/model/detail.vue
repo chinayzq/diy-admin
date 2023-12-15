@@ -159,7 +159,7 @@
             <img
               draggable="false"
               style="height: 100%; width: 100%"
-              :src="item.url"
+              :src="buildImageUrlNew(item.url)"
               alt=""
             />
             <template v-if="item.active">
@@ -446,15 +446,15 @@ const getModelImages = (phoneCode, selectImages, notSelect) => {
       if (selectImages) {
         const { modelImage, caseImage, maskImage } = selectImages;
         const modelItem = modelImageList.value.filter(
-          (item) => item.url === modelImage
+          (item) => item.url === buildImageUrlNew(modelImage)
         )[0];
         setSelectImage("model", modelItem, modelImageList.value);
         const caseItem = caseImageList.value.filter(
-          (item) => item.url === caseImage
+          (item) => item.url === buildImageUrlNew(caseImage)
         )[0];
         setSelectImage("case", caseItem, caseImageList.value);
         const maskItem = maskImageList.value.filter(
-          (item) => item.url === maskImage
+          (item) => item.url === buildImageUrlNew(maskImage)
         )[0];
         setSelectImage("mask", maskItem, maskImageList.value);
       }
@@ -473,6 +473,7 @@ const selectModelImage = ref(null);
 const selectCaseImage = ref(null);
 const selectMaskImage = ref(null);
 const setSelectImage = (type, item, itemList) => {
+  if (!item) return;
   switch (type) {
     case "model":
       selectModelImage.value = item.url;
