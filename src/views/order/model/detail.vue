@@ -16,8 +16,25 @@
           <span class="value">{{ userDTO?.email }}</span>
         </el-col>
         <el-col :span="12" class="single-item">
-          <span class="label">Tracking number：</span>
-          <span class="value">{{ orderDetail.trackingNumber || "-" }}</span>
+          <div>
+            <span class="label">Tracking number：</span>
+            <span class="value">{{ orderDetail.trackingNumber || "-" }}</span>
+          </div>
+          <div class="tracking-update">
+            更新物流：
+            <el-input
+              v-model="trackingNumber"
+              size="mini"
+              style="width: 200px"
+            ></el-input>
+            <el-button
+              @click="updateTrackingInfo"
+              type="primary"
+              size="mini"
+              class="save-button"
+              >保存</el-button
+            >
+          </div>
         </el-col>
         <el-col :span="12" class="single-item">
           <span class="label">支付方式：</span>
@@ -31,10 +48,21 @@
         </el-col>
         <el-col :span="12" class="single-item">
           <span class="label">状态：</span>
-          <span class="value">{{ statusMap[orderDetail.status] || "-" }}</span>
+          <span
+            class="value"
+            :style="{
+              color: orderDetail.status === 3 ? '#ff0000' : '',
+            }"
+            >{{ statusMap[orderDetail.status] || "-" }}</span
+          >
         </el-col>
         <el-col :span="12" class="single-item">
-          <el-button type="primary" @click="refundHandler">Refund</el-button>
+          <el-button
+            type="primary"
+            v-if="orderDetail.status !== 3"
+            @click="refundHandler"
+            >Refund</el-button
+          >
         </el-col>
       </el-row>
     </div>
@@ -175,7 +203,11 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getOrderDetail, refundRequest } from "@/api/order";
+import {
+  getOrderDetail,
+  refundRequest,
+  updateTrackingNumber,
+} from "@/api/order";
 import { dateFormat, buildImageUrlNew } from "@/utils";
 import { ElMessageBox, ElMessage } from "element-plus";
 
@@ -189,6 +221,32 @@ const paymentMethodsOptions = ref({
   0: "paypal",
   1: "信用卡",
 });
+
+const trackingNumber = ref(null);
+const updateTrackingInfo = () => {
+  if (!trackingNumber.value) {
+    ElMessage.warning("请输入物流号！");
+    return;
+  }
+  const { orderId } = route.query;
+  updateTrackingNumber({
+    orderId,
+    trackingNumber: trackingNumber.value,
+  }).then((res) => {
+    if (res.code === 200) {
+      ElMessage({
+        message: "更新成功！",
+        type: "success",
+      });
+      initDatas();
+    } else {
+      ElMessage({
+        message: res.message,
+        type: "warning",
+      });
+    }
+  });
+};
 
 const refundHandler = () => {
   const { orderId } = route.query;
@@ -353,6 +411,14 @@ const downloadImage = (imageUrl) => {
   }
   .card-container + .card-container {
     margin-top: 20px;
+  }
+  .tracking-update {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    .save-button {
+      margin-left: 10px;
+    }
   }
 }
 </style>

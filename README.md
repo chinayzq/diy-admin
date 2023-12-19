@@ -2,4 +2,4 @@
 https://admin.memtoys.com/
 
 swagger：
-http://43.159.137.119:8083/diyadmin/doc.html
+https://admin.memtoys.com/diyadmin/doc.html

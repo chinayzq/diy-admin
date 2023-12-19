@@ -9,3 +9,7 @@ export function getOrderDetail(orderId) {
 export function refundRequest(orderId) {
   return axios.post(`/refundorder/${orderId}`);
 }
+// orderId、trackingNumber
+export function updateTrackingNumber(param) {
+  return axios.post(`/update/trackingnumber`, param);
+}
