@@ -149,15 +149,17 @@ export function buildImageUrl(id) {
   return `/diyadmin/download?fileId=${id}`;
 }
 // 拼接图片地址 - new
+// const filePath = 'https://ossdiyphone.com/'
+const filePath = 'https://osscolgifts.com/'
 export function buildImageUrlNew(id) {
   if (!id) return '';
-  if (id.includes('https://ossdiyphone.com/')) {
+  if (id.includes(filePath)) {
     return id;
   }
   if (id.includes('/diyadmin/download?fileId=')) {
-    return id.replace('/diyadmin/download?fileId=', 'https://ossdiyphone.com/');
+    return id.replace('/diyadmin/download?fileId=', filePath);
   }
-  return `https://ossdiyphone.com/${id}`;
+  return `${filePath}${id}`;
 }
 // 生成唯一的id
 export function uuid() {

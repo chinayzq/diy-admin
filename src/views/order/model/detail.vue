@@ -151,7 +151,7 @@
                     <img
                       @click="downloadImage(image)"
                       class="sticker-image"
-                      v-for="(image, imageIndex) in item.productImageList"
+                      v-for="(image, imageIndex) in item.productImageList" 
                       :key="imageIndex"
                       style="height: 100px; width: 100px"
                       :src="buildImageUrlNew(image)"
