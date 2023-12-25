@@ -1,3 +1,4 @@
+import config from '~/config';
 export function listToTree(list, node, parentNode) {
   let tree = [];
   let map = {};
@@ -150,7 +151,9 @@ export function buildImageUrl(id) {
 }
 // 拼接图片地址 - new
 // const filePath = 'https://ossdiyphone.com/'
-const filePath = 'https://osscolgifts.com/'
+// const filePath = 'https://osscolgifts.com/'
+const filePath = config[import.meta.env.MODE].filePath;
+console.log('filePath', filePath);
 export function buildImageUrlNew(id) {
   if (!id) return '';
   if (id.includes(filePath)) {

@@ -64,7 +64,33 @@
             >Refund</el-button
           >
         </el-col>
+        <el-col :span="12" class="single-item">
+          <span class="label">地址：</span>
+          <span>{{
+            `${billingArray.country} ${billingArray.state} ${billingArray.city} ${billingArray.streetAddress} ${billingArray.apartment}`
+          }}</span>
+        </el-col>
       </el-row>
+      <el-collapse style="margin-top: 15px">
+        <el-collapse-item title="Billing Address">
+          <el-row>
+            <el-col
+              :span="8"
+              class="single-item"
+              v-for="(item, index) in Object.keys(billingArray)"
+              :key="index"
+            >
+              <span class="label">{{ item }}：</span>
+              <span class="value">{{
+                orderDetail.userDTO.billingJson[item] || "-"
+              }}</span>
+            </el-col>
+          </el-row>
+        </el-collapse-item>
+      </el-collapse>
+      <!-- <el-row>
+        <el-collapse-item title="Ship Address"> xxx1 </el-collapse-item>
+      </el-row> -->
     </div>
     <div class="card-container">
       <div class="title-line">商品列表</div>
@@ -151,7 +177,7 @@
                     <img
                       @click="downloadImage(image)"
                       class="sticker-image"
-                      v-for="(image, imageIndex) in item.productImageList" 
+                      v-for="(image, imageIndex) in item.productImageList"
                       :key="imageIndex"
                       style="height: 100px; width: 100px"
                       :src="buildImageUrlNew(image)"
@@ -168,7 +194,7 @@
         <el-col :span="6" :offset="18">
           <span class="label"> 商品小计： </span>
           <span class="value">
-            {{ `$${orderDetail.originalPrice - orderDetail.shippingFree}` }}
+            {{ `$${orderDetail.paidPrice - orderDetail.shippingFree}` }}
           </span>
         </el-col>
       </el-row>
@@ -293,6 +319,9 @@ const initDatas = () => {
   }
 };
 const userDTO = computed(() => orderDetail.value?.userDTO);
+const billingArray = computed(() => {
+  return orderDetail.value?.userDTO?.billingJson || [];
+});
 const productJson = computed(() => orderDetail.value?.productJson);
 initDatas();
 
@@ -320,6 +349,9 @@ const downloadImage = (imageUrl) => {
 
 <style lang="less" scoped>
 .order-detail-component {
+  :deep(.el-collapse-item__header) {
+    font-weight: bold;
+  }
   .card-container {
     border: 1px solid #ccc;
     border-radius: 3px;
@@ -360,9 +392,7 @@ const downloadImage = (imageUrl) => {
       }
       .customer-design {
         margin-top: 10px;
-        :deep(.el-collapse-item__header) {
-          font-weight: bold;
-        }
+
         .single-design-container {
           .link-span {
             margin-bottom: 10px;

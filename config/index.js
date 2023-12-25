@@ -11,8 +11,14 @@ export default {
     baseUrl: '/diyadmin',
     uploadUrl: '/diyadmin/upload',
   },
-  prod: {
+  memtoys: {
     baseUrl: '/diyadmin',
     uploadUrl: '/diyadmin/upload',
+    filePath: 'https://ossdiyphone.com/',
+  },
+  colgifts: {
+    baseUrl: '/diyadmin',
+    uploadUrl: '/diyadmin/upload',
+    filePath: 'https://osscolgifts.com/',
   },
 };
