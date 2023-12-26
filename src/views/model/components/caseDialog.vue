@@ -145,8 +145,12 @@
         <el-button type="primary" @click="saveHandler">保存</el-button>
       </div>
     </el-dialog>
-    <el-dialog v-model="previewDialog.show">
-      <img w-full :src="previewDialog.url" alt="Preview Image" />
+    <el-dialog v-model="previewDialog.show" title="图片预览">
+      <img
+        w-full
+        :src="buildImageUrlNew(previewDialog.url)"
+        alt="Preview Image"
+      />
     </el-dialog>
   </div>
 </template>
