@@ -4,8 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="/favicon.ico" />
-    <title>Colgifts - admin</title>
+    <title id="projectName">Colgifts - admin</title>
     <script>
+      if (location.href.includes('memtoys')) {
+        document.querySelector('#projectName').innerHTML = 'Memtoys - admin';
+      }
       // 禁止滚轮缩放
       document.addEventListener(
         'mousewheel',
