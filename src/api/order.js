@@ -13,3 +13,6 @@ export function refundRequest(orderId) {
 export function updateTrackingNumber(param) {
   return axios.post(`/update/trackingnumber`, param);
 }
+export function updatePrintImage(params) {
+  return axios.get(`/update/printimage`, params);
+}

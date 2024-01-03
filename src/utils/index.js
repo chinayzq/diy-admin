@@ -1,4 +1,6 @@
 import config from '~/config';
+import html2Canvas from 'html2canvas';
+
 export function listToTree(list, node, parentNode) {
   let tree = [];
   let map = {};
@@ -170,5 +172,77 @@ export function uuid() {
     var r = (Math.random() * 16) | 0,
       v = c == 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
+  });
+}
+
+// 导出打印图
+export const exportPrintImage = (domId, maskImages, width, height) => {
+  const cavasDom = document.getElementById('myCanvasMax');
+  cavasDom.width = `${width}`;
+  cavasDom.height = `${height}`;
+  let myCanvasMax = cavasDom.getContext('2d');
+  return new Promise((resolve) => {
+    html2Canvas(document.querySelector(`#${domId}`), {
+      width,
+      height,
+      useCORS: true,
+      allowTaint: true,
+    }).then((canvas) => {
+      let imageURL = canvas.toDataURL('image/png'); //canvas转base64图片
+      let img = new Image();
+      img.src = imageURL;
+      img.onload = async () => {
+        myCanvasMax.globalCompositeOperation = 'source-over';
+        myCanvasMax.drawImage(img, 0, 0, width, height);
+        // if (maskImages) {
+        //   await drawSingleMax(myCanvasMax, maskImages, 'mask', width, height);
+        // }
+        // 设置黑边框
+        // myCanvasMax.globalCompositeOperation = 'source-over';
+        // myCanvasMax.strokeStyle = '#000000';
+        // myCanvasMax.lineWidth = '2';
+        // myCanvasMax.strokeRect(0, 0, width, height);
+        const printUrl = await uploadPrintAndGetUrlMax();
+        resolve(printUrl);
+      };
+    });
+  });
+};
+
+function dataURItoBlob(base64Data) {
+  var byteString;
+  if (base64Data.split(',')[0].indexOf('base64') >= 0)
+    byteString = atob(base64Data.split(',')[1]);
+  else byteString = unescape(base64Data.split(',')[1]);
+  var mimeString = base64Data.split(',')[0].split(':')[1].split(';')[0];
+  var ia = new Uint8Array(byteString.length);
+  for (var i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+  return new Blob([ia], { type: mimeString });
+}
+
+function uploadPrintAndGetUrlMax() {
+  return new Promise((resolve) => {
+    const finalData = document
+      .getElementById('myCanvasMax')
+      .toDataURL('image/png');
+    const blob = dataURItoBlob(finalData);
+    //组装formdata
+    var fd = new FormData();
+    fd.append('file', blob); //fileData为自定义
+    fd.append('fileName', 'print'); //fileName为自定义，名字随机生成或者写死，看需求
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open('POST', '/diyadmin/upload');
+    xmlHttp.send(fd);
+    //ajax回调
+    xmlHttp.onreadystatechange = (res) => {
+      //todo  your code...
+      if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+        try {
+          resolve(JSON.parse(xmlHttp.responseText).data);
+        } catch (error) {}
+      }
+    };
   });
 }
