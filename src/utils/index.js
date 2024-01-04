@@ -187,6 +187,7 @@ export const exportPrintImage = (domId, maskImages, width, height) => {
       height,
       useCORS: true,
       allowTaint: true,
+      backgroundColor: null,
     }).then((canvas) => {
       let imageURL = canvas.toDataURL('image/png'); //canvas转base64图片
       let img = new Image();
