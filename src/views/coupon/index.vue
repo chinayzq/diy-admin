@@ -102,7 +102,7 @@ onBeforeMount(() => {
 const search = ref({
   couponCode: null,
   description: null,
-  offset: 0,
+  offset: 1,
   pageSize: 10,
 });
 const pageVO = ref({
@@ -127,7 +127,8 @@ const initListData = () => {
 };
 const handleCurrentChange = (page) => {
   pageVO.value.current = page;
-  search.value.offset = (page - 1) * search.value.pageSize;
+  search.value.offset = page;
+  // search.value.offset = (page - 1) * search.value.pageSize;
   initListData();
 };
 

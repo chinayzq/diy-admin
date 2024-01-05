@@ -101,7 +101,7 @@ const statusMap = ref({
 const search = ref({
   orderId: null,
   couponCode: null,
-  offset: 0,
+  offset: 1,
   pageSize: 10,
 });
 const pageVO = ref({
@@ -127,7 +127,8 @@ const initListData = () => {
 initListData();
 const handleCurrentChange = (page) => {
   pageVO.value.current = page;
-  search.value.offset = (page - 1) * search.value.pageSize;
+  // search.value.offset = (page - 1) * search.value.pageSize;
+  search.value.offset = page;
   initListData();
 };
 
