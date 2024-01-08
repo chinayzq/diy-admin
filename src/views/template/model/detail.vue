@@ -426,10 +426,10 @@ const getModelImages = (phoneCode, selectImages, notSelect) => {
             };
           });
         maskImageList.value = res.data
-          .filter((item) => item.type === "3")
+          .filter((item) => item.type === "2")
           .map((item) => item.colorUrlList)[0]
           .map((item) => {
-            item.url = buildImageUrlNew(item.url);
+            item.url = buildImageUrlNew(item.maskImage);
             return {
               ...item,
               ...{ active: false },
