@@ -6,11 +6,21 @@
       width="1000"
       :before-close="handleClose"
     >
-      <el-button type="primary" @click="addNewCase">新增手机壳</el-button>
+      <div class="button-line">
+        <el-button type="primary" @click="addNewCase">新增手机壳</el-button>
+      </div>
       <div class="single-item" v-for="(item, index) in itemList" :key="index">
         <div class="left-part">
           <div class="single-upload" v-loading="item.uploadLoading1">
             <!-- 手机壳图片上传 -->
+            <div class="item-title">
+              手机壳图片<el-icon
+                @click="iconDelete(item)"
+                v-show="item.url"
+                class="el-icon-delete"
+                ><Delete
+              /></el-icon>
+            </div>
             <el-upload
               class="avatar-uploader"
               :action="beseUploadUrl"
@@ -34,18 +44,20 @@
                 class="avatar"
               />
               <el-icon v-else class="el-icon-plus avatar-uploader-icon"
-                >手机壳图片<Plus
+                ><Plus
               /></el-icon>
             </el-upload>
-            <el-icon
-              @click="iconDelete(item)"
-              v-show="item.url"
-              class="el-icon-delete"
-              ><Delete
-            /></el-icon>
           </div>
           <div class="single-upload" v-loading="item.uploadLoading2">
             <!-- 手机壳样例上传 -->
+            <div class="item-title">
+              手机壳样例<el-icon
+                @click="iconDelete2(item)"
+                v-show="item.exampleUrl"
+                class="el-icon-delete"
+                ><Delete
+              /></el-icon>
+            </div>
             <el-upload
               class="avatar-uploader"
               :action="beseUploadUrl"
@@ -69,15 +81,47 @@
                 class="avatar"
               />
               <el-icon v-else class="el-icon-plus avatar-uploader-icon"
-                >样例图片<Plus
+                ><Plus
               /></el-icon>
             </el-upload>
-            <el-icon
-              @click="iconDelete2(item)"
-              v-show="item.exampleUrl"
-              class="el-icon-delete"
-              ><Delete
-            /></el-icon>
+          </div>
+          <div class="single-upload" v-loading="item.uploadLoading3">
+            <!-- 手机蒙板上传 -->
+            <div class="item-title">
+              手机壳蒙板
+              <el-icon
+                @click="iconDelete3(item)"
+                v-show="item.maskImage"
+                class="el-icon-delete"
+                ><Delete
+              /></el-icon>
+            </div>
+            <el-upload
+              class="avatar-uploader"
+              :action="beseUploadUrl"
+              :with-credentials="true"
+              :show-file-list="false"
+              :before-upload="
+                () => {
+                  beforeUploadHandler3(index);
+                }
+              "
+              :on-success="
+                (response, uploadFile) => {
+                  handleAvatarSuccess3(response, uploadFile, index);
+                }
+              "
+            >
+              <img
+                v-if="item.maskImage"
+                @click.stop="handlePictureCardPreview(item.maskImage)"
+                v-lazy="buildImageUrlNew(item.maskImage)"
+                class="avatar"
+              />
+              <el-icon v-else class="el-icon-plus avatar-uploader-icon"
+                ><Plus
+              /></el-icon>
+            </el-upload>
           </div>
         </div>
         <div class="right-part">
@@ -189,6 +233,7 @@ const initAndDisplayDatas = (datas) => {
       itemList.value = res.data[0].colorUrlList.map((item) => {
         item.url = item.url;
         item.exampleUrl = item.exampleUrl;
+        item.maskImage = item.maskImage;
         return item;
       });
     } else {
@@ -212,6 +257,7 @@ const saveHandler = () => {
         extend1: item.extend1,
         extend2: item.extend2,
         extend3: item.extend3,
+        maskImage: item.maskImage,
       };
     }),
   };
@@ -237,8 +283,10 @@ const addNewCase = () => {
     extend1: null,
     extend2: null,
     extend3: null,
+    maskImage: null,
     uploadLoading1: false,
     uploadLoading2: false,
+    uploadLoading3: false,
   });
 };
 const iconDelete = (item) => {
@@ -246,6 +294,9 @@ const iconDelete = (item) => {
 };
 const iconDelete2 = (item) => {
   item.exampleUrl = "";
+};
+const iconDelete3 = (item) => {
+  item.maskImage = "";
 };
 const deleteCurrentItem = (index) => {
   itemList.value.splice(index, 1);
@@ -269,27 +320,37 @@ const beforeUploadHandler = (index) => {
 const beforeUploadHandler2 = (index) => {
   itemList.value[index].uploadLoading2 = true;
 };
+const beforeUploadHandler3 = (index) => {
+  itemList.value[index].uploadLoading3 = true;
+};
 const handleAvatarSuccess = (response, uploadFile, index) => {
-  debugger;
   itemList.value[index].url = response.data;
   itemList.value[index].uploadLoading1 = false;
 };
 const handleAvatarSuccess2 = (response, uploadFile, index) => {
-  debugger;
   itemList.value[index].exampleUrl = response.data;
   itemList.value[index].uploadLoading2 = false;
+};
+const handleAvatarSuccess3 = (response, uploadFile, index) => {
+  itemList.value[index].maskImage = response.data;
+  itemList.value[index].uploadLoading3 = false;
 };
 </script>
 
 <style lang="less" scoped>
 .phone-case-dialog {
+  .button-line {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+  }
   .button-container {
-    margin-top: 10px;
+    margin-top: 20px;
     text-align: right;
   }
   .single-item-line {
     display: flex;
     align-items: center;
+    margin-top: 10px;
     .item-label {
       display: inline-block;
       min-width: 135px;
@@ -297,7 +358,6 @@ const handleAvatarSuccess2 = (response, uploadFile, index) => {
     }
   }
   .single-item {
-    display: flex;
     margin-top: 20px;
     min-height: 222px;
     border-bottom: 1px solid #ccc;
@@ -305,14 +365,22 @@ const handleAvatarSuccess2 = (response, uploadFile, index) => {
     .left-part {
       min-width: 220px;
       display: flex;
-      flex-direction: column;
+      justify-content: space-evenly;
       gap: 20px 0;
       .single-upload {
         display: flex;
+        flex-direction: column;
+        align-items: center;
+        .item-title {
+          font-size: 14px;
+          margin-bottom: 6px;
+          font-weight: bold;
+        }
       }
     }
     .right-part {
       display: flex;
+      margin-top: 10px;
     }
     .avatar-uploader {
       // border: 1px dotted #ccc;

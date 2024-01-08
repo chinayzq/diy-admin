@@ -2,7 +2,7 @@ export default {
   development: {
     baseUrl: '/diyadmin',
     uploadUrl: '/diyadmin/upload',
-    filePath: 'https://osscolgifts.com/',
+    filePath: 'https://ossdiyphone.com/',
   },
   sit: {
     baseUrl: '/diyadmin',
