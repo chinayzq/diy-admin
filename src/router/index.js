@@ -47,6 +47,12 @@ const router = createRouter({
           meta: { title: '机型' },
         },
         {
+          path: '/stickerModel',
+          name: 'stickerModel',
+          component: () => import('@/views/stickerModel/index.vue'),
+          meta: { title: '贴纸机型' },
+        },
+        {
           path: '/sticker',
           name: 'sticker',
           component: () => import('@/views/sticker/index.vue'),

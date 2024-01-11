@@ -3,15 +3,31 @@
     <div class="logo-container">
       <img src="@/assets/images/project_logo.png" alt="" />
     </div>
-    <el-menu :default-active="defaultActive" class="el-menu-container" router>
-      <el-menu-item
-        v-for="item in menuList"
-        :key="item.router"
-        :index="item.router"
-      >
-        <el-icon><component :is="item.icon" /></el-icon>
-        <span>{{ item.label }}</span>
-      </el-menu-item>
+    <el-menu
+      :default-active="defaultActive"
+      class="el-menu-container"
+      router
+      :unique-opened="true"
+    >
+      <template v-for="(item, index) in menuList" :key="index">
+        <el-menu-item v-if="!item.children" :index="item.router">
+          <el-icon><component :is="item.icon" /></el-icon>
+          {{ item.label }}</el-menu-item
+        >
+        <el-sub-menu v-else :index="item.router">
+          <template #title
+            ><el-icon><component :is="item.icon" /></el-icon
+            >{{ item.label }}</template
+          >
+          <el-menu-item
+            v-for="(sub, subIndex) in item.children"
+            :key="subIndex"
+            :index="sub.router"
+            ><el-icon><component :is="sub.icon" /></el-icon
+            >{{ sub.label }}</el-menu-item
+          >
+        </el-sub-menu>
+      </template>
     </el-menu>
   </div>
 </template>
@@ -45,19 +61,38 @@ const menuList = ref([
     icon: "Goods",
   },
   {
-    label: "机型",
-    router: "/model",
-    icon: "Menu",
+    label: "手机壳素材",
+    icon: "Goods",
+    router: "phoneCase",
+    children: [
+      {
+        label: "机型",
+        router: "/model",
+        icon: "Menu",
+      },
+      {
+        label: "贴纸",
+        router: "/sticker",
+        icon: "Discount",
+      },
+      {
+        label: "模板",
+        router: "/template",
+        icon: "Grid",
+      },
+    ],
   },
   {
-    label: "贴纸",
-    router: "/sticker",
-    icon: "Discount",
-  },
-  {
-    label: "模板",
-    router: "/template",
-    icon: "Grid",
+    label: "贴纸素材",
+    icon: "Goods",
+    router: "StickerCase",
+    children: [
+      {
+        label: "机型",
+        router: "/stickerModel",
+        icon: "Menu",
+      },
+    ],
   },
   {
     label: "优惠券",
@@ -97,19 +132,19 @@ const menuList = ref([
   .el-menu-container {
     height: calc(100% - 90px);
   }
-  :deep(.el-menu-item) {
-    font-weight: bold;
-    &:hover {
-      background: rgb(241, 239, 239);
-    }
-  }
-  :deep(.el-menu-item.is-active) {
-    background: #fff;
-    color: #000;
-    filter: drop-shadow(2px 4px 6px gray);
-    span {
-      // filter: drop-shadow(2px 4px 6px gray);
-    }
-  }
+  // :deep(.el-menu-item) {
+  //   font-weight: bold;
+  //   &:hover {
+  //     background: rgb(241, 239, 239);
+  //   }
+  // }
+  // :deep(.el-menu-item.is-active) {
+  //   background: #fff;
+  //   color: #000;
+  //   filter: drop-shadow(2px 4px 6px gray);
+  //   span {
+  //     // filter: drop-shadow(2px 4px 6px gray);
+  //   }
+  // }
 }
 </style>

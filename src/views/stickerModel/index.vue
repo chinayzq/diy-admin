@@ -29,7 +29,6 @@
         height="530"
         :data="tableData"
         v-loading="pageLoading"
-        border
         stripe
         style="width: 100%"
       >
@@ -73,18 +72,18 @@
         </el-table-column>
       </el-table>
     </div>
-    <ModelDialog :dataset="modelDialogDatas" @close="dialogCloseHandler" />
+    <!-- <ModelDialog :dataset="modelDialogDatas" @close="dialogCloseHandler" />
     <CaseDialog :dataset="caseDialogDatas" @close="caseDialogCloseHandler" />
-    <PrintDialog :dataset="printSetDialog" @close="printDialogClose" />
+    <PrintDialog :dataset="printSetDialog" @close="printDialogClose" /> -->
   </div>
 </template>
 
 <script setup>
 import { onMounted, ref } from "vue";
 import { getModelList, modelStatusChange } from "@/api/model.js";
-import ModelDialog from "./components/modelDialog.vue";
-import CaseDialog from "./components/caseDialog.vue";
-import PrintDialog from "./components/printDialog.vue";
+// import ModelDialog from "./components/modelDialog.vue";
+// import CaseDialog from "./components/caseDialog.vue";
+// import PrintDialog from "./components/printDialog.vue";
 import { ElMessage } from "element-plus";
 
 const switchState = ref(false);
@@ -131,7 +130,9 @@ onMounted(() => {
 });
 const initListData = () => {
   pageLoading.value = true;
-  getModelList()
+  getModelList({
+    source: 2,
+  })
     .then((res) => {
       const result = res.data;
       modelOptions.value = [
