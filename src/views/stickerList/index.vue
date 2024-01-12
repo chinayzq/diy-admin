@@ -60,8 +60,10 @@ onBeforeMount(() => {
 });
 const getTableDatas = () => {
   pageLoading.value = true;
+  tableData.value = [];
   getStickerList({
     pageSize: 999,
+    source: 2,
   })
     .then((res) => {
       tableData.value = res.data.list.map((item) => {
@@ -94,7 +96,7 @@ const deleteHandler = ({ id }) => {
     type: "warning",
   })
     .then(() => {
-      deletePhoneSticker({ id }).then((res) => {
+      deletePhoneSticker({ id, source: 2 }).then((res) => {
         if (res.code === 200) {
           ElMessage({
             message: "删除成功！",

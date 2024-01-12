@@ -59,9 +59,21 @@ const router = createRouter({
           meta: { title: '贴纸' },
         },
         {
+          path: '/stickerList',
+          name: 'stickerList',
+          component: () => import('@/views/stickerList/index.vue'),
+          meta: { title: '贴纸' },
+        },
+        {
           path: '/template',
           name: 'template',
           component: () => import('@/views/template/index.vue'),
+          meta: { title: '模板' },
+        },
+        {
+          path: '/stickerTemplate',
+          name: 'stickerTemplate',
+          component: () => import('@/views/stickerTemplate/index.vue'),
           meta: { title: '模板' },
         },
         {

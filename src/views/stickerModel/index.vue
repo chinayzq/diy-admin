@@ -51,19 +51,19 @@
             <el-button
               type="primary"
               text
-              @click="editHandler(scope.row, 'phoneModel')"
+              @click="editHandler(scope.row, 'modelImage')"
             >
-              机型颜色
-            </el-button>
-            <el-button type="primary" text @click="caseEditHandler(scope.row)">
-              手机壳颜色
+              机型底图
             </el-button>
             <el-button
               type="primary"
               text
-              @click="editHandler(scope.row, 'MaskImage')"
+              @click="editHandler(scope.row, 'caseImage')"
             >
-              蒙板配置
+              手机壳底图
+            </el-button>
+            <el-button type="primary" text @click="caseEditHandler(scope.row)">
+              贴纸素材
             </el-button>
             <el-button type="primary" text @click="printSetHandler(scope.row)">
               打印尺寸设置
@@ -72,18 +72,16 @@
         </el-table-column>
       </el-table>
     </div>
-    <!-- <ModelDialog :dataset="modelDialogDatas" @close="dialogCloseHandler" />
+    <ModelDialog :dataset="modelDialogDatas" @close="dialogCloseHandler" />
     <CaseDialog :dataset="caseDialogDatas" @close="caseDialogCloseHandler" />
-    <PrintDialog :dataset="printSetDialog" @close="printDialogClose" /> -->
   </div>
 </template>
 
 <script setup>
 import { onMounted, ref } from "vue";
 import { getModelList, modelStatusChange } from "@/api/model.js";
-// import ModelDialog from "./components/modelDialog.vue";
-// import CaseDialog from "./components/caseDialog.vue";
-// import PrintDialog from "./components/printDialog.vue";
+import ModelDialog from "./components/modelDialog.vue";
+import CaseDialog from "./components/caseDialog.vue";
 import { ElMessage } from "element-plus";
 
 const switchState = ref(false);
@@ -103,19 +101,6 @@ const statusChangeHandler = ({ status, itemId }) => {
       initListData();
     }
   });
-};
-
-const printSetDialog = ref({
-  show: false,
-  title: "打印尺寸设置",
-  datas: {},
-});
-const printSetHandler = (item) => {
-  printSetDialog.value.show = true;
-  printSetDialog.value.datas = item;
-};
-const printDialogClose = () => {
-  printSetDialog.value.show = false;
 };
 
 const tableData = ref([]);
@@ -159,11 +144,12 @@ const dataFilterHandler = () => {
 
 const caseDialogDatas = ref({
   show: false,
-  title: "手机壳颜色",
+  title: "贴纸素材",
   phoneCode: "",
   type: 2,
 });
-const caseEditHandler = ({ phoneCode }) => {
+const caseEditHandler = ({ phoneCode, phoneName }) => {
+  caseDialogDatas.value.title = `贴纸素材 - ${phoneName}`;
   caseDialogDatas.value.phoneCode = phoneCode;
   caseDialogDatas.value.show = true;
 };
@@ -174,24 +160,23 @@ const caseDialogCloseHandler = () => {
 
 const modelDialogDatas = ref({
   show: false,
-  title: "机型颜色",
+  title: "机型底图",
   phoneCode: "",
   type: "",
 });
-const editHandler = ({ phoneCode }, type) => {
+
+//   modelImage: "机型底图" - 1
+//   caseImage: "手机壳底图" - 3
+const editHandler = ({ phoneCode, phoneName }, type) => {
   const titleMap = {
-    phoneModel: "机型颜色",
-    phoneCase: "手机壳颜色",
-    MaskImage: "蒙板配置",
+    modelImage: "机型底图",
+    caseImage: "手机壳底图",
   };
-  //   phoneModel: "机型颜色" - 1,
-  //   phoneCase: "手机壳颜色" - 2,
   const typeMap = {
-    phoneModel: 1,
-    phoneCase: 2,
-    MaskImage: 3,
+    modelImage: 1,
+    caseImage: 3,
   };
-  modelDialogDatas.value.title = titleMap[type];
+  modelDialogDatas.value.title = `${titleMap[type]} - ${phoneName}`;
   modelDialogDatas.value.type = typeMap[type];
   modelDialogDatas.value.phoneCode = phoneCode;
   modelDialogDatas.value.show = true;

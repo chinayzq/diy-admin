@@ -92,6 +92,16 @@ const menuList = ref([
         router: "/stickerModel",
         icon: "Menu",
       },
+      {
+        label: "贴纸",
+        router: "/stickerList",
+        icon: "Discount",
+      },
+      {
+        label: "模板",
+        router: "/stickerTemplate",
+        icon: "Grid",
+      },
     ],
   },
   {
