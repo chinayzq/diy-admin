@@ -216,6 +216,14 @@
       </el-row>
       <el-row class="pay-info-line">
         <el-col :span="6" :offset="18">
+          <span class="label"> 优惠券： </span>
+          <span class="value">
+            {{ `${orderDetail.discountCode || "-"}` }}
+          </span>
+        </el-col>
+      </el-row>
+      <el-row class="pay-info-line">
+        <el-col :span="6" :offset="18">
           <span class="label"> 实付金额： </span>
           <span class="value">
             {{ `$${orderDetail.paidPrice}` }}
