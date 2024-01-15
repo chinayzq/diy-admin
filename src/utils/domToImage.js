@@ -29,6 +29,7 @@ function drawSingle(myCanvas, image, type) {
   };
   return new Promise((resolve) => {
     let img = new Image();
+    img.setAttribute('crossOrigin', 'Anonymous');
     img.src = image;
     img.onload = () => {
       myCanvas.globalCompositeOperation = operationMap[type];
@@ -81,22 +82,13 @@ export function exportAsImage(domId, images) {
   let myCanvas = document.getElementById('myCanvas').getContext('2d');
   const { mask, model, caseImage } = images;
   return new Promise((resolve) => {
-    // html2Canvas(document.querySelector(`#${domId}`), {
-    //   width: 150,
-    // }).then((canvas) => {
-    //   console.log('canvas', canvas);
-    //   let imageURL = canvas.toDataURL('image/png'); //canvas转base64图片
-    //   console.log('imageURL', imageURL);
-    //   document.getElementById('aBase64Url').href = imageURL;
-    //   document.getElementById('aBase64Url').style = 'display: block';
-    //   document.getElementById('base64Url').src = imageURL;
-    //   document.getElementById('aBase64Url').click();
-    //   document.getElementById('aBase64Url').style = 'display: none';
-    //   resolve();
-    // });
-    domtoimage.toPng(document.querySelector(`#${domId}`)).then((imgbase64) => {
+    html2Canvas(document.querySelector(`#${domId}`), {
+      useCORS: true,
+      allowTaint: true,
+    }).then((canvas) => {
+      let imageURL = canvas.toDataURL('image/png'); //canvas转base64图片
       let img = new Image();
-      img.src = imgbase64;
+      img.src = imageURL;
       img.onload = async () => {
         myCanvas.globalCompositeOperation = 'source-over';
         myCanvas.drawImage(img, 0, 0);
@@ -113,5 +105,24 @@ export function exportAsImage(domId, images) {
         resolve(url);
       };
     });
+    // domtoimage.toPng(document.querySelector(`#${domId}`)).then((imgbase64) => {
+    //   let img = new Image();
+    //   img.src = imgbase64;
+    //   img.onload = async () => {
+    //     myCanvas.globalCompositeOperation = 'source-over';
+    //     myCanvas.drawImage(img, 0, 0);
+    //     if (mask) {
+    //       await drawSingle(myCanvas, mask, 'mask');
+    //     }
+    //     if (caseImage) {
+    //       await drawSingle(myCanvas, caseImage, 'caseImage');
+    //     }
+    //     if (model) {
+    //       await drawSingle(myCanvas, model, 'model');
+    //     }
+    //     const url = await uploadAndGetTemplateUrl();
+    //     resolve(url);
+    //   };
+    // });
   });
 }

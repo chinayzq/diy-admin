@@ -116,7 +116,7 @@ const deleteHandler = ({ templateId }) => {
 const router = useRouter();
 const jumpToTemplateDetail = ({ templateId }) => {
   router.push({
-    path: "/template/detail",
+    path: "/stickerTemplate/detail",
     query: {
       templateId,
       typeCode: props.dataset.typeCode,

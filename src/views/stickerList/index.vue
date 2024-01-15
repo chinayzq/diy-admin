@@ -62,6 +62,7 @@ const getTableDatas = () => {
   pageLoading.value = true;
   tableData.value = [];
   getStickerList({
+    offset: 1,
     pageSize: 999,
     source: 2,
   })

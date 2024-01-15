@@ -65,9 +65,9 @@
             <el-button type="primary" text @click="caseEditHandler(scope.row)">
               贴纸素材
             </el-button>
-            <el-button type="primary" text @click="printSetHandler(scope.row)">
+            <!-- <el-button type="primary" text @click="printSetHandler(scope.row)">
               打印尺寸设置
-            </el-button>
+            </el-button> -->
           </template>
         </el-table-column>
       </el-table>

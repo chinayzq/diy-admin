@@ -50,7 +50,7 @@ const tableData = ref([]);
 const getTableList = () => {
   pageLoading.value = true;
   getItemByClassId({
-    classId: "19",
+    classId: "29",
   })
     .then((res) => {
       if (res.code === 200) {
@@ -79,7 +79,7 @@ const dialogCloseHandler = (freshFlag) => {
 
 const addHandler = ({ itemCode }) => {
   router.push({
-    path: "/template/detail",
+    path: "/stickerTemplate/detail",
     query: {
       typeCode: itemCode,
     },
@@ -87,7 +87,7 @@ const addHandler = ({ itemCode }) => {
 };
 const addNewTemplate = () => {
   router.push({
-    path: "/template/detail",
+    path: "/stickerTemplate/detail",
   });
 };
 </script>

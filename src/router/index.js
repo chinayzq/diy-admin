@@ -87,6 +87,16 @@ const router = createRouter({
           },
         },
         {
+          path: '/stickerTemplate/detail',
+          name: 'templateDetail',
+          component: () => import('@/views/stickerTemplate/model/detail.vue'),
+          meta: {
+            title: '模板详情',
+            detail: true,
+            parrentPath: '/stickerTemplate',
+          },
+        },
+        {
           path: '/dictionary',
           name: 'dictionary',
           component: () => import('@/views/dictionary/index.vue'),

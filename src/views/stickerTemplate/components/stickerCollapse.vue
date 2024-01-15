@@ -41,6 +41,7 @@ const stickerList = ref([]);
 const initStickerList = () => {
   stickerLoading.value = true;
   getStickerList({
+    source: 2,
     offset: 1,
     pageSize: 500,
   })
