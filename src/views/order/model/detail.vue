@@ -122,7 +122,7 @@
           <div>
             <span class="label"> description： </span>
             <span class="value">
-              {{ item.description }}
+              {{ descriptionRender(item) }}
             </span>
           </div>
           <div>
@@ -324,6 +324,27 @@ import {
 } from "@/api/order";
 import { dateFormat, buildImageUrlNew, exportPrintImage } from "@/utils";
 import { ElMessageBox, ElMessage } from "element-plus";
+
+const descriptionRender = (item) => {
+  const { phoneName, extend1, extend2, caseColor } = item.extendJson || {};
+  let result = "";
+  if (phoneName) {
+    result += phoneName;
+  }
+  if (item.source === 1) {
+    result += " sticker";
+  }
+  if (caseColor) {
+    result += ` - ${caseColor}`;
+  }
+  if (extend1) {
+    result += ` ${extend1}`;
+  }
+  if (extend2) {
+    result += ` ${extend2}`;
+  }
+  return result;
+};
 
 const statusMap = ref({
   0: "on hold",

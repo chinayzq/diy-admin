@@ -48,7 +48,7 @@
         </el-table-column>
         <el-table-column prop="operation" label="操作" width="500">
           <template #default="scope">
-            <el-button
+            <!-- <el-button
               type="primary"
               text
               @click="editHandler(scope.row, 'modelImage')"
@@ -61,7 +61,7 @@
               @click="editHandler(scope.row, 'caseImage')"
             >
               手机壳底图
-            </el-button>
+            </el-button> -->
             <el-button type="primary" text @click="caseEditHandler(scope.row)">
               贴纸素材
             </el-button>
