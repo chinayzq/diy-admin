@@ -326,12 +326,13 @@ import { dateFormat, buildImageUrlNew, exportPrintImage } from "@/utils";
 import { ElMessageBox, ElMessage } from "element-plus";
 
 const descriptionRender = (item) => {
+  console.log("item", item);
   const { phoneName, extend1, extend2, caseColor } = item.extendJson || {};
   let result = "";
   if (phoneName) {
     result += phoneName;
   }
-  if (item.source === 1) {
+  if (item.source === 2) {
     result += " sticker";
   }
   if (caseColor) {
