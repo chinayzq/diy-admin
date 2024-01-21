@@ -172,8 +172,17 @@
               <span class="item-label"> SKU： </span>
               <el-input v-model="item.extend3" placeholder="sku"></el-input>
             </el-col>
+            <el-col :span="12" class="single-item-line">
+              <span class="item-label"> 是否显示： </span>
+              <el-switch
+                v-model="item.status"
+                :active-value="0"
+                :inactive-value="1"
+                style="margin-right：10px"
+              />
+            </el-col>
             <el-col
-              :span="12"
+              :span="24"
               class="single-item-line"
               style="display: flex; justify-content: end"
             >
@@ -232,6 +241,8 @@ const initAndDisplayDatas = (datas) => {
     if (res.code === 200) {
       itemList.value = res.data[0].colorUrlList.map((item) => {
         item.url = item.url;
+        // 默认生效
+        item.status = item.status || 0;
         item.exampleUrl = item.exampleUrl;
         item.maskImage = item.maskImage;
         return item;
@@ -249,6 +260,7 @@ const saveHandler = () => {
     colorUrlList: itemList.value.map((item) => {
       return {
         url: item.url,
+        status: item.status,
         exampleUrl: item.exampleUrl,
         colorName: item.colorName,
         curPrice: item.curPrice,

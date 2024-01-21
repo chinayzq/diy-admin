@@ -488,7 +488,11 @@ const sleepHandler = (time) => {
 };
 const dealPrintImageHandler = (itemData) => {
   return new Promise(async (resolve) => {
-    selectModelImage.value = itemData.extendJson.printData.modelImage;
+    // 手机壳的用机型图来撑起大小，板材的用蒙版来撑起大小
+    selectModelImage.value =
+      itemData.source === 1
+        ? itemData.extendJson.printData.modelImage
+        : itemData.extendJson.printData.maskImage;
     selectCaseImage.value = itemData.extendJson.printData.caseImage;
     selectMaskImage.value = itemData.extendJson.printData.maskImage;
     stickerList.value = itemData.extendJson.printData.graphDatas;

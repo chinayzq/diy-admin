@@ -177,6 +177,7 @@ export function uuid() {
 
 // 导出打印图
 export const exportPrintImage = (domId, maskImages, width, height) => {
+  // debugger
   const cavasDom = document.getElementById('myCanvasMax');
   cavasDom.width = `${width}`;
   cavasDom.height = `${height}`;
@@ -186,11 +187,13 @@ export const exportPrintImage = (domId, maskImages, width, height) => {
       width,
       height,
       useCORS: true,
+      // scale: 1,
       allowTaint: true,
       backgroundColor: null,
     }).then((canvas) => {
       let imageURL = canvas.toDataURL('image/png'); //canvas转base64图片
       let img = new Image();
+      img.setAttribute('crossOrigin', 'Anonymous');
       img.src = imageURL;
       img.onload = async () => {
         myCanvasMax.globalCompositeOperation = 'source-over';
@@ -246,4 +249,24 @@ function uploadPrintAndGetUrlMax() {
       }
     };
   });
+}
+function drawSingleMax(myCanvas, image, type, width, height) {
+  const operationMap = {
+    mask: 'destination-in',
+    model: 'destination-over',
+    caseImage: 'destination-over',
+  };
+  return new Promise((resolve) => {
+    let img = new Image();
+    img.setAttribute('crossOrigin', 'Anonymous');
+    img.src = image;
+    img.onload = () => {
+      myCanvas.globalCompositeOperation = operationMap[type];
+      myCanvas.drawImage(img, 0, 0, width, height);
+      setTimeout(() => {
+        resolve();
+      }, 200);
+    };
+  });
+  // };
 }
