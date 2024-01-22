@@ -495,7 +495,15 @@ const dealPrintImageHandler = (itemData) => {
         : itemData.extendJson.printData.maskImage;
     selectCaseImage.value = itemData.extendJson.printData.caseImage;
     selectMaskImage.value = itemData.extendJson.printData.maskImage;
-    stickerList.value = itemData.extendJson.printData.graphDatas;
+    stickerList.value = itemData.extendJson.printData.graphDatas.map((item) => {
+      // item.scale = item.scale * 0.8;
+      // 300 / 331 = 0.906
+      item.top = item.top * 0.906;
+      item.left = item.left * 0.906;
+      item.width = item.width * 0.906;
+      item.height = item.height * 0.906;
+      return item;
+    });
     await sleepHandler(2000);
     // 获取打印设置，如果有就以打印设置为准
     // const { width, height } = getItem("printAdjust") || {};
