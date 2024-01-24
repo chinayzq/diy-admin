@@ -171,6 +171,11 @@
                     />
                   </div>
                 </div>
+                <div class="single-one" v-show="env === 'development'">
+                  <el-button size="mini" type="primary" @click="reRender(item)"
+                    >重新渲染</el-button
+                  >
+                </div>
                 <div class="list-one">
                   <div class="title">贴纸列表(点击图片可下载原图)</div>
                   <div class="sticker-list">
@@ -325,6 +330,7 @@ import {
 import { dateFormat, buildImageUrlNew, exportPrintImage } from "@/utils";
 import { ElMessageBox, ElMessage } from "element-plus";
 
+const env = import.meta.env.MODE;
 const descriptionRender = (item) => {
   console.log("item", item);
   const { phoneName, extend1, extend2, caseColor } = item.extendJson || {};
@@ -457,6 +463,17 @@ const downloadImage = (imageUrl) => {
   };
 };
 
+// 重新渲染打印图
+const reRender = (datas) => {
+  const currentId = datas.productId;
+  orderDetail.value.productJson.forEach((item) => {
+    if (item.productId === currentId) {
+      item.extendJson.printUrl = null;
+    }
+  });
+  updatePrintImageHandler(orderDetail.value);
+};
+
 const selectModelImage = ref(null);
 const selectCaseImage = ref(null);
 const selectMaskImage = ref(null);
@@ -498,10 +515,10 @@ const dealPrintImageHandler = (itemData) => {
     stickerList.value = itemData.extendJson.printData.graphDatas.map((item) => {
       // item.scale = item.scale * 0.8;
       // 300 / 331 = 0.906
-      item.top = item.top * 0.906;
-      item.left = item.left * 0.906;
-      item.width = item.width * 0.906;
-      item.height = item.height * 0.906;
+      // item.top = item.top * 0.906;
+      // item.left = item.left * 0.906;
+      // item.width = item.width * 0.906;
+      // item.height = item.height * 0.906;
       return item;
     });
     await sleepHandler(2000);

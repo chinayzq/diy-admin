@@ -74,8 +74,8 @@
       <el-pagination
         background
         @current-change="handleCurrentChange"
-        :default-current-page="1"
-        :current-page="pageVO.current"
+        :default-current-page="search.offset"
+        :current-page.sync="search.offset"
         :page-size="search.pageSize"
         layout="prev, pager, next"
         :total="pageVO.total"
@@ -86,9 +86,9 @@
 </template>
 
 <script setup>
-import { onBeforeMount, ref } from "vue";
+import { nextTick, onBeforeMount, onMounted, ref } from "vue";
 import { dateFormat } from "@/utils";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { getOrderList } from "@/api/order";
 
 const statusMap = ref({
@@ -105,14 +105,26 @@ const search = ref({
   pageSize: 10,
 });
 const pageVO = ref({
-  current: 1,
+  // current: 1,
   total: 0,
 });
 
+const router = useRouter();
 const pageLoading = ref(false);
 const tableData = ref([]);
-const initListData = () => {
+const route = useRoute();
+const initListData = (initFlag) => {
   pageLoading.value = true;
+  if (!initFlag) {
+    let str = [];
+    for (let keys in search.value) {
+      let val = search.value[keys];
+      if (keys && val) {
+        str.push(keys + "=" + val);
+      }
+    }
+    router.push(route.path + "?" + str.join("&"));
+  }
   getOrderList(search.value)
     .then((res) => {
       if (res.code === 200) {
@@ -124,15 +136,31 @@ const initListData = () => {
       pageLoading.value = false;
     });
 };
-initListData();
+onMounted(() => {
+  getUrlQuerys();
+});
+const getUrlQuerys = () => {
+  //获取连接上携带的参数
+  const qData = route.query;
+  for (let key in qData) {
+    if (key) {
+      if (key === "offset") {
+        search.value[key] = Number(qData[key]);
+      } else {
+        search.value[key] = qData[key];
+      }
+    }
+  }
+  console.log("search.value", search.value);
+  initListData(true);
+};
 const handleCurrentChange = (page) => {
-  pageVO.value.current = page;
+  // pageVO.value.current = page;
   // search.value.offset = (page - 1) * search.value.pageSize;
   search.value.offset = page;
   initListData();
 };
 
-const router = useRouter();
 const editHandler = (item) => {
   router.push({
     path: "/order/detail",

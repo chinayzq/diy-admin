@@ -1,6 +1,8 @@
 <template>
   <!-- <screen-adapter> -->
+  <!-- <keep-alive> -->
   <router-view></router-view>
+  <!-- </keep-alive> -->
   <!-- </screen-adapter> -->
 </template>
 
