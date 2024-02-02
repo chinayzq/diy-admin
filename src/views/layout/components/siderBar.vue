@@ -37,6 +37,7 @@ import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 const defaultActive = ref("/model");
 const router = useRouter();
+const currentRoleId = localStorage.getItem("diy-role-id");
 watch(
   () => router.currentRoute.value,
   (path) => {
@@ -49,7 +50,7 @@ watch(
   },
   { immediate: true, deep: true }
 );
-const menuList = ref([
+const defaultMenuList = ref([
   {
     label: "用户",
     router: "/user",
@@ -120,6 +121,17 @@ const menuList = ref([
     icon: "List",
   },
 ]);
+const menuList = ref([]);
+const menuFilter = () => {
+  if (currentRoleId === "2") {
+    menuList.value = defaultMenuList.value.filter(
+      (item) => item.router === "/order" || item.router === "/coupon"
+    );
+  } else {
+    menuList.value = defaultMenuList.value;
+  }
+};
+menuFilter();
 </script>
 
 <style lang="less" scoped>

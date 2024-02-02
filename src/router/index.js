@@ -5,7 +5,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/user',
+      redirect: '/order',
       component: Layout,
       children: [
         {
@@ -78,7 +78,7 @@ const router = createRouter({
         },
         {
           path: '/template/detail',
-          name: 'templateDetail',
+          name: 'phoneTemplateDetail',
           component: () => import('@/views/template/model/detail.vue'),
           meta: {
             title: '模板详情',
@@ -124,7 +124,17 @@ const router = createRouter({
     },
   ],
 });
+
 router.beforeEach((to, from, next) => {
+  const currentRoleId = localStorage.getItem('diy-role-id');
+  console.log('to', to);
+  if (
+    currentRoleId === '2' &&
+    !['/order', '/login', '/coupon'].includes(to.path)
+  ) {
+    next('/order');
+    return;
+  }
   next();
 });
 export default router;

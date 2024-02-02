@@ -110,6 +110,7 @@ const handleLogin = () => {
           } else {
             if (res.data && res.data.token) {
               localStorage.setItem("diy-admin-token", res.data.token);
+              localStorage.setItem("diy-role-id", res.data.roleId);
               router.push("/");
             }
           }
