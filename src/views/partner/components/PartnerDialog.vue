@@ -105,7 +105,7 @@
 
 <script setup>
 import { ref, watch } from "vue";
-import { updateCoupon } from "@/api/coupon";
+import { editPartner } from "@/api/partner";
 import { ElMessage } from "element-plus";
 const props = defineProps({
   dataset: {
@@ -118,7 +118,7 @@ const props = defineProps({
 watch(
   () => props.dataset,
   (datas) => {
-    if (datas?.datas?.couponCode) {
+    if (datas?.datas?.id) {
       displayDatas(datas.datas);
     }
   },
@@ -145,13 +145,16 @@ const statusOptions = ref([
   },
 ]);
 const displayDatas = (datas) => {
-  console.log("datas", datas);
-  formData.value.couponPercent = datas.couponPercent;
-  formData.value.couponCount = datas.couponCount;
-  formData.value.mixAmount = datas.mixAmount;
-  formData.value.maxAmount = datas.maxAmount;
-  formData.value.expiredDate = datas.expiredDate;
-  formData.value.description = datas.description;
+  formData.value.name = datas.name;
+  formData.value.couponCode = datas.couponCode;
+  formData.value.effect = datas.effect;
+  formData.value.faceUrl = datas.faceUrl;
+  formData.value.fansCount = datas.fansCount;
+  formData.value.fee = datas.fee;
+  formData.value.phone = datas.phone;
+  formData.value.principal = datas.principal;
+  formData.value.status = datas.status;
+  formData.value.id = datas.id;
 };
 
 const formData = ref({
@@ -190,7 +193,7 @@ const editHandler = () => {
     params.couponCode = props.dataset.datas.couponCode;
   }
   submitLoading.value = true;
-  updateCoupon(params)
+  editPartner(params)
     .then((res) => {
       if (res.code === 200) {
         ElMessage({
@@ -211,12 +214,15 @@ const handleClose = () => {
 };
 const resetForm = () => {
   formData.value = {
-    couponPercent: null,
-    couponCount: null,
-    mixAmount: null,
-    maxAmount: null,
-    expiredDate: null,
-    description: null,
+    name: null,
+    couponCode: null,
+    effect: null,
+    faceUrl: null,
+    fansCount: null,
+    fee: null,
+    phone: null,
+    principal: null,
+    status: 0,
   };
 };
 </script>
