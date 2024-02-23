@@ -114,6 +114,12 @@ const router = createRouter({
           component: () => import('@/views/coupon/index.vue'),
           meta: { title: '优惠券' },
         },
+        {
+          path: '/partner',
+          name: 'partner',
+          component: () => import('@/views/partner/index.vue'),
+          meta: { title: '合作网红' },
+        },
       ],
     },
     {

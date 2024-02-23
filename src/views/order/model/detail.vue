@@ -199,7 +199,8 @@
         <el-col :span="6" :offset="18">
           <span class="label"> 商品小计： </span>
           <span class="value">
-            {{ `$${orderDetail.originalPrice - orderDetail.shippingFree}` }}
+            {{ `$${orderDetail.originalPrice}` }}
+            <!-- {{ `$${orderDetail.originalPrice - orderDetail.shippingFree}` }} -->
           </span>
         </el-col>
       </el-row>

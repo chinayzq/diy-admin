@@ -111,6 +111,11 @@ const defaultMenuList = ref([
     icon: "Ticket",
   },
   {
+    label: "合作网红",
+    router: "/partner",
+    icon: "Avatar",
+  },
+  {
     label: "页面配置",
     router: "/pageConfig",
     icon: "Document",
