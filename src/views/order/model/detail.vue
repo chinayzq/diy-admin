@@ -514,12 +514,12 @@ const dealPrintImageHandler = (itemData) => {
     selectCaseImage.value = itemData.extendJson.printData.caseImage;
     selectMaskImage.value = itemData.extendJson.printData.maskImage;
     stickerList.value = itemData.extendJson.printData.graphDatas.map((item) => {
-      // item.scale = item.scale * 0.8;
+      // item.scale = item.scale * 0.906;
       // 300 / 331 = 0.906
-      // item.top = item.top * 0.906;
-      // item.left = item.left * 0.906;
-      // item.width = item.width * 0.906;
-      // item.height = item.height * 0.906;
+      item.top = item.top * 0.906;
+      item.left = item.left * 0.906;
+      item.width = item.width * 0.906;
+      item.height = item.height * 0.906;
       return item;
     });
     await sleepHandler(2000);

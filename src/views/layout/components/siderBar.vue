@@ -130,7 +130,10 @@ const menuList = ref([]);
 const menuFilter = () => {
   if (currentRoleId === "2") {
     menuList.value = defaultMenuList.value.filter(
-      (item) => item.router === "/order" || item.router === "/coupon"
+      (item) =>
+        item.router === "/order" ||
+        item.router === "/coupon" ||
+        item.router === "/partner"
     );
   } else {
     menuList.value = defaultMenuList.value;

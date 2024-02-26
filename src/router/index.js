@@ -136,7 +136,9 @@ router.beforeEach((to, from, next) => {
   console.log('to', to);
   if (
     currentRoleId === '2' &&
-    !['/order/detail', '/order', '/login', '/coupon'].includes(to.path)
+    !['/order/detail', '/order', '/login', '/coupon', '/partner'].includes(
+      to.path
+    )
   ) {
     next('/order');
     return;
