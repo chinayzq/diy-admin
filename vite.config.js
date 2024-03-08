@@ -66,8 +66,8 @@ export default ({ mode }) =>
       hmr: true,
       proxy: {
         '/diyadmin': {
-          target: 'https://admin.colgifts.com/',
-          // target: 'https://admin.memtoys.com/',
+          // target: 'https://admin.colgifts.com/',
+          target: 'https://admin.memtoys.com/',
           changeOrigin: true,
           // rewrite: (path) => path.replace(/^\/saascloud/, 'saascloud'),
         },
