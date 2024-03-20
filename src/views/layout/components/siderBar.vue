@@ -150,7 +150,10 @@ const menuFilter = () => {
       (item) =>
         item.router === "/order" ||
         item.router === "/coupon" ||
-        item.router === "/partner"
+        item.router === "/partner" ||
+        item.router === "dataCrawling" ||
+        item.router === "/tk" ||
+        item.router === "/ins"
     );
   } else {
     menuList.value = defaultMenuList.value;
