@@ -116,6 +116,23 @@ const defaultMenuList = ref([
     icon: "Avatar",
   },
   {
+    label: "数据爬取",
+    icon: "DataAnalysis",
+    router: "dataCrawling",
+    children: [
+      {
+        label: "TK列表",
+        router: "/tk",
+        icon: "PriceTag",
+      },
+      {
+        label: "INS列表",
+        router: "/ins",
+        icon: "PriceTag",
+      },
+    ],
+  },
+  {
     label: "页面配置",
     router: "/pageConfig",
     icon: "Document",

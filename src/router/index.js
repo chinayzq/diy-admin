@@ -120,6 +120,18 @@ const router = createRouter({
           component: () => import('@/views/partner/index.vue'),
           meta: { title: '合作网红' },
         },
+        {
+          path: '/tk',
+          name: 'tk',
+          component: () => import('@/views/tk/index.vue'),
+          meta: { title: '合作网红' },
+        },
+        {
+          path: '/ins',
+          name: 'ins',
+          component: () => import('@/views/ins/index.vue'),
+          meta: { title: '合作网红' },
+        },
       ],
     },
     {
