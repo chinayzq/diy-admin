@@ -2,7 +2,7 @@
   <div class="tk-list">
     <div class="search-line">
       <div class="single-item">
-        <span class="item-label">网红地址: </span>
+        <span class="item-label">网红地址： </span>
         <span>
           <el-input
             style="width: 180px"
@@ -14,7 +14,7 @@
         </span>
       </div>
       <div class="single-item">
-        <el-button type="primary">查询</el-button>
+        <el-button type="primary" @click="initListData">查询</el-button>
         <el-button type="primary" @click="newTaskDialog.show = true"
           >新增爬取</el-button
         >
@@ -109,6 +109,7 @@
 import { ref } from "vue";
 import { dateFormat } from "@/utils";
 import TKDetailDialog from "./components/TKDetailDialog.vue";
+import { getFetchList } from "@/api/dataFetch.js";
 
 const detailDialogDatas = ref({
   show: false,
@@ -158,6 +159,7 @@ const search = ref({
   address: null,
   offset: 1,
   pageSize: 10,
+  source: "tk",
 });
 const pageVO = ref({
   current: 1,
@@ -172,17 +174,17 @@ const tableData = ref([
   },
 ]);
 const initListData = () => {
-  // pageLoading.value = true;
-  // getPartnerList(search.value)
-  //   .then((res) => {
-  //     if (res.code === 200) {
-  //       tableData.value = res.data.list;
-  //       pageVO.value.total = res.data.totalCount;
-  //     }
-  //   })
-  //   .finally(() => {
-  //     pageLoading.value = false;
-  //   });
+  pageLoading.value = true;
+  getFetchList(search.value)
+    .then((res) => {
+      if (res.code === 200) {
+        tableData.value = res.data.list;
+        pageVO.value.total = res.data.totalCount;
+      }
+    })
+    .finally(() => {
+      pageLoading.value = false;
+    });
 };
 initListData();
 const handleCurrentChange = (page) => {
