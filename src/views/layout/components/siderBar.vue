@@ -125,11 +125,11 @@ const defaultMenuList = ref([
         router: "/tk",
         icon: "PriceTag",
       },
-      {
-        label: "INS列表",
-        router: "/ins",
-        icon: "PriceTag",
-      },
+      // {
+      //   label: "INS列表",
+      //   router: "/ins",
+      //   icon: "PriceTag",
+      // },
     ],
   },
   {

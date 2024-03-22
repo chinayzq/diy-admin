@@ -7,7 +7,7 @@
           <el-input
             style="width: 180px"
             clearable
-            v-model="search.address"
+            v-model="search.url"
             placeholder="请输入网红地址"
           >
           </el-input>
@@ -15,9 +15,9 @@
       </div>
       <div class="single-item">
         <el-button type="primary" @click="initListData">查询</el-button>
-        <el-button type="primary" @click="newTaskDialog.show = true"
+        <!-- <el-button type="primary" @click="newTaskDialog.show = true"
           >新增爬取</el-button
-        >
+        > -->
       </div>
     </div>
     <div class="table-container">
@@ -30,21 +30,22 @@
         style="width: 100%"
       >
         <el-table-column type="index" width="50" />
-        <el-table-column prop="address" label="网红地址" />
-        <el-table-column prop="createdDate" label="创建时间">
+        <el-table-column prop="url" label="网红地址" />
+        <el-table-column prop="createdTime" label="创建时间">
           <template #default="scope">
             <span>
-              {{ dateFormat(scope.row.createdDate) }}
+              {{ dateFormat(scope.row.createdTime) }}
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="抓取状态">
+        <el-table-column prop="status" label="抓取状态" />
+        <!-- <el-table-column prop="status" label="抓取状态">
           <template #default="scope">
             <span>
               {{ statusMaps[scope.row.status] }}
             </span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column prop="operation" label="操作">
           <template #default="scope">
             <el-button type="primary" text @click="detailOpenDialog(scope.row)">
@@ -114,10 +115,10 @@ import { getFetchList } from "@/api/dataFetch.js";
 const detailDialogDatas = ref({
   show: false,
   title: "详情",
-  id: null,
+  fetchId: null,
 });
-const detailOpenDialog = ({ id }) => {
-  detailDialogDatas.value.id = id;
+const detailOpenDialog = ({ fetchId }) => {
+  detailDialogDatas.value.fetchId = fetchId || "1";
   detailDialogDatas.value.show = true;
 };
 const detailCloseHandler = () => {
@@ -156,7 +157,7 @@ const statusMaps = ref({
 });
 
 const search = ref({
-  address: null,
+  url: null,
   offset: 1,
   pageSize: 10,
   source: "tk",
@@ -166,13 +167,7 @@ const pageVO = ref({
   total: 0,
 });
 const pageLoading = ref(false);
-const tableData = ref([
-  {
-    address: "test11111",
-    createdDate: 1710902538979,
-    status: 1,
-  },
-]);
+const tableData = ref([]);
 const initListData = () => {
   pageLoading.value = true;
   getFetchList(search.value)
