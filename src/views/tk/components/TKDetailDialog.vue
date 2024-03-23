@@ -1,116 +1,83 @@
 <template>
   <div class="tk-detail-dialog">
     <el-dialog
-      v-model="props.dataset.show"
-      :title="props.dataset.title"
-      width="1200"
-      :before-close="handleClose"
+        v-model="props.dataset.show"
+        width="1400"
+        :before-close="handleClose"
     >
-      <el-tabs v-model="activeName">
-        <el-tab-pane label="关注列表" name="focusList">
-          <div class="filter-line">
-            <span>
-              <el-button type="primary" @click="initFocusDatas">查询</el-button>
-            </span>
-            <span>
-              <el-input
-                style="width: 120px"
-                v-model="focusExport.min"
-                placeholder="最小粉丝数"
-              ></el-input>
-              <el-input
-                style="width: 120px; margin: 0 10px"
-                v-model="focusExport.max"
-                placeholder="最大粉丝数"
-              ></el-input>
-              <el-button type="primary" @click="focusExportHandler"
-                >导出</el-button
-              >
-            </span>
-          </div>
-          <div class="table-container">
-            <el-table
-              height="530"
-              :data="focusDatas"
-              v-loading="focusLoading"
-              border
-              stripe
-              style="width: 100%"
-            >
-              <el-table-column type="index" width="50" />
-              <el-table-column prop="url" label="关注者地址" />
-              <el-table-column prop="count" label="粉丝数" />
-              <el-table-column prop="email" label="邮箱地址" />
-            </el-table>
-          </div>
-          <div class="pagination-container">
-            <el-pagination
-              background
-              @current-change="handleCurrentChange"
-              :default-current-page="1"
-              :current-page="pageVO.current"
-              :page-size="pageVO.pageSize"
-              layout="prev, pager, next"
-              :total="pageVO.total"
-            >
-            </el-pagination>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="粉丝列表" name="fansList">
-          <div class="filter-line">
-            <el-button type="primary" @click="initFansDatas">查询</el-button>
-            <el-button type="primary" @click="fansExportHandler"
-              >导出</el-button
-            >
-          </div>
-          <div class="table-container">
-            <el-table
-              height="530"
-              :data="fansDatas"
-              v-loading="fansLoading"
-              border
-              stripe
-              style="width: 100%"
-            >
-              <el-table-column type="index" width="50" />
-              <el-table-column prop="url" label="粉丝地址" />
-              <el-table-column prop="count" label="粉丝数" />
-              <el-table-column prop="email" label="邮箱地址" />
-            </el-table>
-          </div>
-          <div class="pagination-container">
-            <el-pagination
-              background
-              @current-change="handleCurrentChange2"
-              :default-current-page="1"
-              :current-page="pageVO2.current"
-              :page-size="pageVO2.pageSize"
-              layout="prev, pager, next"
-              :total="pageVO2.total"
-            >
-            </el-pagination>
-          </div>
-        </el-tab-pane>
-      </el-tabs>
+      <template #title>
+        <div class="el-dialog__title" style="margin: 6px 0">
+          {{ props.dataset.tag === 'fans' ? '粉丝数据' : '关注数据' }} - {{ props.dataset.url }}
+        </div>
+      </template>
+      <el-divider style="margin-top: 0"/>
+      <div class="filter-line">
+        <el-input
+            style="width: 200px"
+            v-model="min"
+            placeholder="最小粉丝数"
+            type="number"
+        ></el-input>
+        <el-input
+            style="width: 200px; margin: 0 10px"
+            v-model="max"
+            placeholder="最大粉丝数"
+            type="number"
+        ></el-input>
+        <el-button type="primary" @click="fetchPage">查询</el-button>
+        <el-button type="primary" @click="exportHandler">导出</el-button>
+      </div>
+      <div class="table-container">
+        <el-table
+            height="530"
+            :data="list"
+            v-loading="loading"
+            border
+            stripe
+            style="width: 100%"
+        >
+          <el-table-column prop="id" width="50" label="id"/>
+          <el-table-column prop="url" width="400" label="主页地址"/>
+          <el-table-column prop="uniqueId" width="200" label="账号"/>
+          <el-table-column prop="nickname" label="网名"/>
+          <el-table-column prop="count" width="100" label="粉丝数"/>
+          <el-table-column prop="followingCount" width="100" label="关注数"/>
+          <el-table-column prop="diggCount" width="100" label="点赞数"/>
+          <el-table-column prop="videoCount" width="100" label="视频数"/>
+          <el-table-column prop="email" width="200" label="邮箱地址"/>
+        </el-table>
+      </div>
+      <div class="pagination-container">
+        <el-pagination
+            background
+            @current-change="handleCurrentChange"
+            :default-current-page="1"
+            :current-page="pageVO.current"
+            :page-size="pageVO.pageSize"
+            layout="prev, pager, next"
+            :total="pageVO.total"
+        >
+        </el-pagination>
+      </div>
     </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { watch, ref } from "vue";
+import {watch, ref} from "vue";
+import {ElMessage} from "element-plus";
 import {
   getFellowList,
   getFansList,
   focusListExport,
   fansListExport,
 } from "@/api/dataFetch.js";
+import qs from "qs";
 
-const focusDatas = ref([]);
-const focusLoading = ref(false);
-const focusExport = ref({
-  min: null,
-  max: null,
-});
+const list = ref([]);
+const loading = ref(false);
+const min = ref(null)
+const max = ref(null)
 const pageVO = ref({
   current: 1,
   offset: 1,
@@ -121,98 +88,79 @@ const pageVO = ref({
 const handleCurrentChange = (page) => {
   pageVO.value.current = page;
   pageVO.value.offset = page;
-  // search.value.offset = (page - 1) * search.value.pageSize;
-  initFocusDatas();
-};
-const handleCurrentChange2 = (page) => {
-  pageVO2.value.current = page;
-  pageVO2.value.offset = page;
-  // search.value.offset = (page - 1) * search.value.pageSize;
-  initFansDatas();
+  fetchPage()
 };
 
-const fansDatas = ref([]);
-const fansLoading = ref(false);
-const pageVO2 = ref({
-  current: 1,
-  offset: 1,
-  pageSize: 10,
-  source: "tk",
-  total: 0,
-});
+async function fetchPage() {
+  loading.value = true;
+  const body = {
+    countBegin: min.value,
+    countEnd: max.value,
+    ...pageVO.value, fetchId: props.dataset.fetchId
+  }
+  const {code, data} = props.dataset.tag === 'fans' ?
+      await getFansList(body) :
+      await getFellowList(body)
+  console.log(data)
+  if (code !== 200) {
+    ElMessage.warning("数据获取失败，请稍后重试")
+    return
+  }
+  list.value = data.list;
+  pageVO.value.total=data.totalPages
+  loading.value = false;
+}
 
-const initFocusDatas = () => {
-  // 获取关注列表
-  focusLoading.value = true;
-  getFellowList({ ...pageVO.value, fetchId: props.dataset.fetchId })
-    .then((res) => {
-      focusDatas.value = res.data.list;
-    })
-    .finally(() => {
-      focusLoading.value = false;
-    });
-};
-const focusExportHandler = () => {
-  focusListExport({
+function exportHandler() {
+  const body = {
     fetchId: props.dataset.fetchId,
-    countBegin: focusExport.min,
-    countEnd: focusExport.max,
-  }).then((res) => {
-    console.log("xxx", res);
-  });
-};
-const initFansDatas = () => {
-  // 获取粉丝列表
-  fansLoading.value = true;
-  getFansList({ ...pageVO2.value, fetchId: props.dataset.fetchId })
-    .then((res) => {
-      fansDatas.value = res.data.list;
-    })
-    .finally(() => {
-      fansLoading.value = false;
-    });
-};
-const fansExportHandler = () => {
-  fansListExport({ fetchId: props.dataset.fetchId }).then((res) => {
-    console.log("xxx", res);
-  });
-};
+    countBegin: min.value,
+    countEnd: max.value,
+  }
+  if (props.dataset.tag === 'fans') fansListExport(body).then(down)
+  else focusListExport(body).then(down)
+}
 
-const activeName = ref("focusList");
+function down(data) {
+  const blob = new Blob([data], {type: "application/octet-stream;charset=utf-8"});
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.style.display = 'none';
+  link.href = url;
+  link.download = `tiktok_${new Date().getTime()}.xlsx`;
+  document.body.appendChild(link);
+  link.click();
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(link);
+}
 
 const props = defineProps({
   dataset: {
     type: Object,
-    default() {
-      return {};
-    },
+    default: () => ({})
   },
 });
-watch(
-  () => props.dataset,
-  (datas) => {
-    if (datas?.fetchId) {
-      initFocusDatas();
-      initFansDatas();
-    }
-  },
-  {
-    deep: true,
-  }
-);
+
+watch(() => props.dataset.show, (show) => !!show && fetchPage())
 
 const emit = defineEmits();
 const handleClose = () => {
   emit("close");
+  pageVO.value.current = 1
+  pageVO.value.offset = 1
+  pageVO.value.pageSize = 10
+  pageVO.value.source = "tk"
+  pageVO.value.total = 0
+  list.value.length = 0
 };
 </script>
 
 <style lang="less" scoped>
 .tk-detail-dialog {
   .filter-line {
-    margin-bottom: 10px;
+    margin-bottom: 16px;
     display: flex;
-    justify-content: space-between;
+    justify-content: right;
     align-items: center;
   }
 }

@@ -12,8 +12,8 @@ export function getFansList(params) {
   return axios.get('/list/fans', { params });
 }
 export function focusListExport(params) {
-  return axios.get('/list/exportfollow', { params });
+  return axios.get('/list/exportfollow', { params, responseType: 'blob'});
 }
 export function fansListExport(params) {
-  return axios.get('/list/exportfans', { params });
+  return axios.get('/list/exportfans', { params, responseType: 'blob'});
 }

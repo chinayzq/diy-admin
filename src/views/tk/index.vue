@@ -29,12 +29,21 @@
         stripe
         style="width: 100%"
       >
-        <el-table-column type="index" width="50" />
-        <el-table-column prop="url" label="网红地址" />
+        <el-table-column prop="id" width="50" label="id" />
+        <el-table-column prop="url" label="网红地址">
+          <template #default="scope">
+            <a :href="scope.row.url" target="_blank">{{scope.row.url}}</a>
+          </template>
+        </el-table-column>
+        <el-table-column prop="tag" label="类型" >
+          <template #default="scope">
+          {{ scope.row.tag === 'fans' ? '粉丝数据' : '关注数据' }}
+          </template>
+        </el-table-column>
         <el-table-column prop="createdTime" label="创建时间">
           <template #default="scope">
             <span>
-              {{ dateFormat(scope.row.createdTime) }}
+              {{ dateFormat(scope.row.createdTime*1000) }}
             </span>
           </template>
         </el-table-column>
@@ -49,7 +58,7 @@
         <el-table-column prop="operation" label="操作">
           <template #default="scope">
             <el-button type="primary" text @click="detailOpenDialog(scope.row)">
-              详情
+              查看
             </el-button>
             <!-- <el-button type="danger" text @click="deleteHandler(scope.row)">
               删除
@@ -116,9 +125,13 @@ const detailDialogDatas = ref({
   show: false,
   title: "详情",
   fetchId: null,
+  tag: null,
+  url: null,
 });
-const detailOpenDialog = ({ fetchId }) => {
-  detailDialogDatas.value.fetchId = fetchId || "1";
+const detailOpenDialog = ({ id , tag, url}) => {
+  detailDialogDatas.value.fetchId = id || "1";
+  detailDialogDatas.value.tag = tag;
+  detailDialogDatas.value.url = url;
   detailDialogDatas.value.show = true;
 };
 const detailCloseHandler = () => {
