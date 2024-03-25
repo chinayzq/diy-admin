@@ -25,7 +25,7 @@
             type="number"
         ></el-input>
         <el-button type="primary" @click="fetchPage">查询</el-button>
-        <el-button type="primary" @click="exportHandler">导出</el-button>
+        <el-button type="primary" @click="exportHandler" :loading="exportLoading">导出</el-button>
       </div>
       <div class="table-container">
         <el-table
@@ -76,6 +76,7 @@ import qs from "qs";
 
 const list = ref([]);
 const loading = ref(false);
+const exportLoading = ref(false);
 const min = ref(null)
 const max = ref(null)
 const pageVO = ref({
@@ -107,11 +108,12 @@ async function fetchPage() {
     return
   }
   list.value = data.list;
-  pageVO.value.total=data.totalPages
+  pageVO.value.total=data.totalCount
   loading.value = false;
 }
 
 function exportHandler() {
+  exportLoading.value = true
   const body = {
     fetchId: props.dataset.fetchId,
     countBegin: min.value,
@@ -132,6 +134,7 @@ function down(data) {
   link.click();
   window.URL.revokeObjectURL(url);
   document.body.removeChild(link);
+  exportLoading.value = false
 }
 
 const props = defineProps({
